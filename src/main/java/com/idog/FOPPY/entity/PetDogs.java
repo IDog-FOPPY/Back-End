@@ -32,7 +32,6 @@ public class PetDogs {
         this.petOld = petOld;
         this.disease = disease;
         this.neutered = neutered;
-
     }
 
     public void updatePetDogs(String petName, Boolean petSex, breedState petBreed, Long petOld, String disease, Boolean neutered,LocalDateTime modifiedDate) {

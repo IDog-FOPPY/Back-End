@@ -16,7 +16,6 @@ public class PetResponseDTO {
     private LocalDateTime createdDate = LocalDateTime.now(); // 생성일
     private LocalDateTime modifiedDate; // 수정일
 
-
     public PetResponseDTO(PetDogs entity) {
         this.petId = entity.getPetId();
         this.petName = entity.getPetName();
