@@ -13,6 +13,7 @@ public class PetRequestDTO {
     private String disease;
     private boolean neutered;
 
+
     public PetDogs toEntity() {
         return PetDogs.builder()
                 .petId(petId)
