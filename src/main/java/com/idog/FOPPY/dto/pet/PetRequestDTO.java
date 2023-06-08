@@ -7,11 +7,11 @@ public class PetRequestDTO {
 
     private Long petId;
     private String petName;
-    private boolean petSex;
+    private Boolean petSex;
     private breedState petBreed;
     private Long petOld;
     private String disease;
-    private boolean neutered;
+    private Boolean neutered;
 
     public PetDogs toEntity() {
         return PetDogs.builder()

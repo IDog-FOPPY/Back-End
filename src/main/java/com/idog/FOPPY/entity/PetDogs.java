@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter  @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
 public class PetDogs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +19,13 @@ public class PetDogs {
     private Long petOld; // 개 나이
     private String disease;  // 질병
     private Boolean neutered; // 중성화 유무(true=유 / false=무)
-    private LocalDateTime createdDate = LocalDateTime.now(); // 생성일
+
+    private final LocalDateTime createdDate = LocalDateTime.now(); // 생성일
     private LocalDateTime modifiedDate; // 수정일
 
     @Builder
-    public PetDogs(Long petId, String petName, Boolean petSex, breedState petBreed, Long petOld, String disease, Boolean neutered) {
+    public PetDogs(Long petId, String petName, Boolean petSex, breedState petBreed, Long petOld,
+                   String disease, Boolean neutered, Boolean missed) {
         this.petId = petId;
         this.petName = petName;
         this.petSex = petSex;
@@ -34,7 +35,8 @@ public class PetDogs {
         this.neutered = neutered;
     }
 
-    public void updatePetDogs(String petName, Boolean petSex, breedState petBreed, Long petOld, String disease, Boolean neutered,LocalDateTime modifiedDate) {
+    public void updatePetDogs(String petName, Boolean petSex, breedState petBreed, Long petOld,
+                              String disease, Boolean neutered,LocalDateTime modifiedDate) {
         this.petName = petName;
         this.petSex = petSex;
         this.petBreed = petBreed;

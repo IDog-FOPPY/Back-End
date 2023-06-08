@@ -13,8 +13,8 @@ public class PetResponseDTO {
     private Long petOld;
     private String disease;
     private Boolean neutered;
-    private LocalDateTime createdDate = LocalDateTime.now(); // 생성일
-    private LocalDateTime modifiedDate; // 수정일
+    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime modifiedDate;
 
     public PetResponseDTO(PetDogs entity) {
         this.petId = entity.getPetId();

@@ -7,7 +7,6 @@ import com.idog.FOPPY.repository.PetDogsRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springdoc.core.converters.models.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class PetDogsService {
 
     @Autowired
-    private final PetDogsRepository petdogsrepository;
+    private final PetDogsRepository petDogsRepository;
 
     /**
      * 반려견 추가
@@ -27,16 +26,26 @@ public class PetDogsService {
     @Transactional
     public Long save(final PetRequestDTO params) {
 
-        PetDogs petdogs = petdogsrepository.save(params.toEntity());
-        return petdogs.getPetId();
+        PetDogs petDogs = petDogsRepository.save(params.toEntity());
+        return petDogs.getPetId();
     }
 
     /**
-     * 반려견 정보 조회
+     * 전체 반려견 조회
      */
     public List<PetResponseDTO> findAll() {
-        List<PetDogs> list = petdogsrepository.findAll();
+        List<PetDogs> list = petDogsRepository.findAll();
         return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
+
+    /**
+     * ID로 반려견 상세정보 조회
+     */
+    @Transactional
+    public PetResponseDTO findById(final Long petId) {
+        PetDogs petDogs = petDogsRepository.findById(petId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려견 정보입니다."));
+        return new PetResponseDTO(petDogs);
     }
 
     /**
@@ -44,14 +53,22 @@ public class PetDogsService {
      */
     @Transactional
     public Long update(Long petId, PetRequestDTO params) {
-        PetDogs petdogs = petdogsrepository.findById(petId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 반려견이 존재하지 않습니다."));
+        PetDogs petDogs = petDogsRepository.findById(petId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려견 정보입니다."));
 
-        petdogs.updatePetDogs(params.toEntity().getPetName(), params.toEntity().getPetSex(),
+        petDogs.updatePetDogs(params.toEntity().getPetName(), params.toEntity().getPetSex(),
                 params.toEntity().getPetBreed(), params.toEntity().getPetOld(), params.toEntity().getDisease(),
                 params.toEntity().getNeutered(),params.toEntity().getModifiedDate());
 
         return petId;
+    }
+
+    /**
+     * 반려견 정보 삭제
+     */
+    @Transactional
+    public void deleteById(Long petId){
+        petDogsRepository.deleteById(petId);
     }
 
 }
