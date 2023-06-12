@@ -12,6 +12,7 @@ public class PetRequestDTO {
     private Long petOld;
     private String disease;
     private Boolean neutered;
+    private Boolean missed;
 
     public PetDogs toEntity() {
         return PetDogs.builder()
@@ -22,6 +23,7 @@ public class PetRequestDTO {
                 .petOld(petOld)
                 .disease(disease)
                 .neutered(neutered)
+                .missed(missed)
                 .build();
     }
 }

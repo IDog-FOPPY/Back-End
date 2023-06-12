@@ -42,7 +42,7 @@ class PetDogsController {
 
     @Operation(summary = "반려견 정보 수정")
     @PatchMapping("/PetDogs/{petId}")
-    public Long save(@PathVariable final Long petId, @RequestBody final PetRequestDTO params) {
+    public Long update(@PathVariable final Long petId, @RequestBody final PetRequestDTO params) {
         return petDogsService.update(petId, params);
     }
 

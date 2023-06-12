@@ -21,7 +21,7 @@ public class PetDogsService {
     private final PetDogsRepository petDogsRepository;
 
     /**
-     * 반려견 추가
+     * 반려견 등록
      */
     @Transactional
     public Long save(final PetRequestDTO params) {
@@ -58,10 +58,12 @@ public class PetDogsService {
 
         petDogs.updatePetDogs(params.toEntity().getPetName(), params.toEntity().getPetSex(),
                 params.toEntity().getPetBreed(), params.toEntity().getPetOld(), params.toEntity().getDisease(),
-                params.toEntity().getNeutered(),params.toEntity().getModifiedDate());
+                params.toEntity().getNeutered(), params.toEntity().getMissed(), params.toEntity().getMissLocation(),
+                params.toEntity().getMissTime(), params.toEntity().getModifiedDate());
 
         return petId;
     }
+
 
     /**
      * 반려견 정보 삭제

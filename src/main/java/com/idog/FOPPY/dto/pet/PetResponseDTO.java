@@ -13,6 +13,7 @@ public class PetResponseDTO {
     private Long petOld;
     private String disease;
     private Boolean neutered;
+    private Boolean missed;
     private LocalDateTime createdDate = LocalDateTime.now();
     private LocalDateTime modifiedDate;
 
@@ -24,6 +25,7 @@ public class PetResponseDTO {
         this.petOld= entity.getPetOld();
         this.disease= entity.getDisease();
         this.neutered= entity.getNeutered();
+        this.missed= entity.getMissed();
         this.createdDate = entity.getCreatedDate();
         this.modifiedDate = entity.getModifiedDate();
     }
