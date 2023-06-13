@@ -14,6 +14,10 @@ public class PetResponseDTO {
     private String disease;
     private Boolean neutered;
     private Boolean missed;
+    private String missLocation_city;
+    private String missLocation_gu;
+    private String missLocation_dong;
+    private LocalDateTime missTime;
     private LocalDateTime createdDate = LocalDateTime.now();
     private LocalDateTime modifiedDate;
 
@@ -26,6 +30,10 @@ public class PetResponseDTO {
         this.disease= entity.getDisease();
         this.neutered= entity.getNeutered();
         this.missed= entity.getMissed();
+        this.missLocation_city = entity.getMissLocation_city();
+        this.missLocation_gu = entity.getMissLocation_gu();
+        this.missLocation_dong = entity.getMissLocation_dong();
+        this.missTime = entity.getMissTime();
         this.createdDate = entity.getCreatedDate();
         this.modifiedDate = entity.getModifiedDate();
     }

@@ -1,9 +1,8 @@
 package com.idog.FOPPY.entity;
 
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Getter  @Entity
@@ -21,7 +20,9 @@ public class PetDogs {
     private Boolean neutered; // 중성화 유무(true=유 / false=무)
 
     private Boolean missed; // 실종 유무(true=실종 / false=집에 있음)
-    private String missLocation; // 실종 장소
+    private String missLocation_city; // 실종 장소 (시)
+    private String missLocation_gu; // 실종 장소 (구)
+    private String missLocation_dong; // 실종 장소 (동)
     private LocalDateTime missTime; // 실종 시간
 
     private final LocalDateTime createdDate = LocalDateTime.now(); // 생성일
@@ -29,7 +30,8 @@ public class PetDogs {
 
     @Builder
     public PetDogs(Long petId, String petName, Boolean petSex, breedState petBreed, Long petOld, String disease,
-                   Boolean neutered, String missLocation, LocalDateTime missTime, Boolean missed) {
+                   Boolean neutered, String missLocation_city, String missLocation_gu, String missLocation_dong,
+                   LocalDateTime missTime, Boolean missed) {
         this.petId = petId;
         this.petName = petName;
         this.petSex = petSex;
@@ -37,14 +39,16 @@ public class PetDogs {
         this.petOld = petOld;
         this.disease = disease;
         this.neutered = neutered;
-
         this.missed = missed;
-        this.missLocation = missLocation;
+        this.missLocation_city = missLocation_city;
+        this.missLocation_gu = missLocation_gu;
+        this.missLocation_dong = missLocation_dong;
         this.missTime = missTime;
     }
 
     public void updatePetDogs(String petName, Boolean petSex, breedState petBreed, Long petOld,
-                              String disease, Boolean neutered,Boolean missed, String missLocation,
+                              String disease, Boolean neutered,Boolean missed,
+                              String missLocation_city, String missLocation_gu, String missLocation_dong,
                               LocalDateTime missTime, LocalDateTime modifiedDate) {
         this.petName = petName;
         this.petSex = petSex;
@@ -53,7 +57,9 @@ public class PetDogs {
         this.disease = disease;
         this.neutered = neutered;
         this.missed = missed;
-        this.missLocation = missLocation;
+        this.missLocation_city = missLocation_city;
+        this.missLocation_gu = missLocation_gu;
+        this.missLocation_dong = missLocation_dong;
         this.missTime = missTime;
         this.modifiedDate = LocalDateTime.now();
     }

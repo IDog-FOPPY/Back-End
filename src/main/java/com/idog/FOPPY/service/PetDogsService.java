@@ -58,7 +58,8 @@ public class PetDogsService {
 
         petDogs.updatePetDogs(params.toEntity().getPetName(), params.toEntity().getPetSex(),
                 params.toEntity().getPetBreed(), params.toEntity().getPetOld(), params.toEntity().getDisease(),
-                params.toEntity().getNeutered(), params.toEntity().getMissed(), params.toEntity().getMissLocation(),
+                params.toEntity().getNeutered(), params.toEntity().getMissed(),
+                params.toEntity().getMissLocation_city(), params.toEntity().getMissLocation_gu(), params.toEntity().getMissLocation_dong(),
                 params.toEntity().getMissTime(), params.toEntity().getModifiedDate());
 
         return petId;
