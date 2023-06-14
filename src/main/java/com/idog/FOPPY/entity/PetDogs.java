@@ -20,17 +20,16 @@ public class PetDogs {
     private Boolean neutered; // 중성화 유무(true=유 / false=무)
 
     private Boolean missed; // 실종 유무(true=실종 / false=집에 있음)
-    private String missLocation_city; // 실종 장소 (시)
-    private String missLocation_gu; // 실종 장소 (구)
-    private String missLocation_dong; // 실종 장소 (동)
+    private String missCity; // 실종 장소 (시)
+    private String missGu; // 실종 장소 (구)
+    private String missDong; // 실종 장소 (동)
     private LocalDateTime missTime; // 실종 시간
 
     private final LocalDateTime createdDate = LocalDateTime.now(); // 생성일
-    private LocalDateTime modifiedDate = LocalDateTime.now(); // 수정일
 
     @Builder
     public PetDogs(Long petId, String petName, Boolean petSex, breedState petBreed, Long petOld, String disease,
-                   Boolean neutered, String missLocation_city, String missLocation_gu, String missLocation_dong,
+                   Boolean neutered, String missCity, String missGu, String missDong,
                    LocalDateTime missTime, Boolean missed) {
         this.petId = petId;
         this.petName = petName;
@@ -40,15 +39,15 @@ public class PetDogs {
         this.disease = disease;
         this.neutered = neutered;
         this.missed = missed;
-        this.missLocation_city = missLocation_city;
-        this.missLocation_gu = missLocation_gu;
-        this.missLocation_dong = missLocation_dong;
+        this.missCity = missCity;
+        this.missGu = missGu;
+        this.missDong = missDong;
         this.missTime = missTime;
     }
 
     public void updatePetDogs(String petName, Boolean petSex, breedState petBreed, Long petOld,
                               String disease, Boolean neutered,Boolean missed,
-                              String missLocation_city, String missLocation_gu, String missLocation_dong,
+                              String missCity, String missGu, String missDong,
                               LocalDateTime missTime) {
         this.petName = petName;
         this.petSex = petSex;
@@ -57,9 +56,9 @@ public class PetDogs {
         this.disease = disease;
         this.neutered = neutered;
         this.missed = missed;
-        this.missLocation_city = missLocation_city;
-        this.missLocation_gu = missLocation_gu;
-        this.missLocation_dong = missLocation_dong;
+        this.missCity = missCity;
+        this.missGu = missGu;
+        this.missDong = missDong;
         this.missTime = missTime;
     }
 

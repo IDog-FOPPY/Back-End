@@ -27,16 +27,16 @@ public class PetDogsTest {
     void save() {
         // 1. 반려견 파라미터 생성
         PetDogs params = PetDogs.builder()
-                .petName("덕철")
+                .petName("바둑이")
                 .petSex(true)
-                .petBreed(breedState.말티즈)
-                .petOld(5L)
+                .petBreed(breedState.비글)
+                .petOld(4L)
                 .disease(null)
                 .neutered(true)
                 .missed(true)
-                .missLocation_city("서울특별시")
-                .missLocation_gu("송파구")
-                .missLocation_dong("문정동")
+                .missCity("서울특별시")
+                .missGu("영등포구")
+                .missDong("문래동")
                 .missTime(LocalDateTime.now())
                 .build();
 
@@ -61,7 +61,7 @@ public class PetDogsTest {
     void delete() {
 
         // 1. 반려견 조회
-        PetDogs entity1 = petdogsrepository.findById((long) 18).get();
+        PetDogs entity1 = petdogsrepository.findById((long) 17).get();
         System.out.println(entity1);
         // 2. 반려견 삭제
         petdogsrepository.delete(entity1);
@@ -80,15 +80,15 @@ public class PetDogsTest {
                 .disease("기관지 협착증")
                 .neutered(true)
                 .missed(false)
-                .missLocation_city(null)
-                .missLocation_gu(null)
-                .missLocation_dong(null)
+                .missCity(null)
+                .missGu(null)
+                .missDong(null)
                 .missTime(null)
                 .build();
 
         petDogs.updatePetDogs(params.getPetName(), params.getPetSex(), params.getPetBreed(),
                 params.getPetOld(), params.getDisease(), params.getNeutered(), params.getMissed(),
-                params.getMissLocation_city(), params.getMissLocation_gu(), params.getMissLocation_dong(), params.getMissTime());
+                params.getMissCity(), params.getMissGu(), params.getMissDong(), params.getMissTime());
     }
 }
 

@@ -13,4 +13,6 @@ public interface PetDogsRepository extends JpaRepository<PetDogs, Long> {
     List<PetDogs> findByMissedIsTrue();
 
     List<PetDogs> findByPetBreed(breedState petBreed);
+
+    List<PetDogs> findByMissGu(String missGu);
 }

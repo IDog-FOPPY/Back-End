@@ -33,4 +33,12 @@ public class StrayDogsService {
         List<PetDogs> list = petDogsRepository.findByPetBreed(petBreed);
         return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
     }
+
+    /**
+     * 지역별 소팅
+     */
+    public List<PetResponseDTO> findByLocation(String gu){
+        List<PetDogs> list = petDogsRepository.findByMissGu(gu);
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
 }

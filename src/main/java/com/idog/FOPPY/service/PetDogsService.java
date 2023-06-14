@@ -58,7 +58,7 @@ public class PetDogsService {
 
         petDogs.updatePetDogs(params.getPetName(), params.getPetSex(), params.getPetBreed(),
                 params.getPetOld(), params.getDisease(), params.getNeutered(), params.getMissed(),
-                params.getMissLocation_city(), params.getMissLocation_gu(), params.getMissLocation_dong(), params.getMissTime());
+                params.getMissCity(), params.getMissGu(), params.getMissDong(), params.getMissTime());
 
         return petId;
     }

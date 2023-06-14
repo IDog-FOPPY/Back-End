@@ -29,8 +29,14 @@ public class StrayDogsController {
     }
 
     @Operation(summary = "견종별 조회")
-    @GetMapping("/StrayDogs/{petBreed}")
-    public List<PetResponseDTO> findByBreed(@PathVariable(name = "petBreed")final breedState petBreed){
+    @GetMapping("/StrayDogs/ByBreed/{petBreed}")
+    public List<PetResponseDTO> findByBreed(@PathVariable(name = "petBreed") final breedState petBreed){
         return strayDogsService.findByBreed(petBreed);
+    }
+
+    @Operation(summary = "지역별 조회")
+    @GetMapping("/StrayDogs/ByLocation/{missGu}")
+    public List<PetResponseDTO> findByLocation(@PathVariable(name = "missGu") final String missGu){
+        return strayDogsService.findByLocation(missGu);
     }
 }

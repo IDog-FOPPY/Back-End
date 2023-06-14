@@ -19,9 +19,9 @@ public class PetRequestDTO {
     private String disease;
     private Boolean neutered;
     private Boolean missed;
-    private String missLocation_city;
-    private String missLocation_gu;
-    private String missLocation_dong;
+    private String missCity;
+    private String missGu;
+    private String missDong;
     private LocalDateTime missTime;
 
 
@@ -35,9 +35,9 @@ public class PetRequestDTO {
                 .disease(disease)
                 .neutered(neutered)
                 .missed(missed)
-                .missLocation_city(missLocation_city)
-                .missLocation_gu(missLocation_gu)
-                .missLocation_dong(missLocation_dong)
+                .missCity(missCity)
+                .missGu(missGu)
+                .missDong(missDong)
                 .missTime(missTime)
                 .build();
     }
