@@ -27,13 +27,17 @@ public class PetDogsTest {
     void save() {
         // 1. 반려견 파라미터 생성
         PetDogs params = PetDogs.builder()
-                .petName("뚜비")
+                .petName("덕철")
                 .petSex(true)
                 .petBreed(breedState.말티즈)
-                .petOld(4L)
-                .disease("슬개골 탈구")
+                .petOld(5L)
+                .disease(null)
                 .neutered(true)
                 .missed(true)
+                .missLocation_city("서울특별시")
+                .missLocation_gu("송파구")
+                .missLocation_dong("문정동")
+                .missTime(LocalDateTime.now())
                 .build();
 
         // 2.  저장
@@ -57,7 +61,7 @@ public class PetDogsTest {
     void delete() {
 
         // 1. 반려견 조회
-        PetDogs entity1 = petdogsrepository.findById((long) 13).get();
+        PetDogs entity1 = petdogsrepository.findById((long) 18).get();
         System.out.println(entity1);
         // 2. 반려견 삭제
         petdogsrepository.delete(entity1);

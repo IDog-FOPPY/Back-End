@@ -72,14 +72,6 @@ public class PetDogsService {
         petDogsRepository.deleteById(petId);
     }
 
-    /**
-     * 전체 유기견 목록 조회
-     */
-    public List<PetResponseDTO> findAllStray() {
-        List<PetDogs> list = petDogsRepository.findByMissedIsTrue();
-        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
-    }
-
 }
 
 
