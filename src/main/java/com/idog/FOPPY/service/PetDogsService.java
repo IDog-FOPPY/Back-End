@@ -56,11 +56,9 @@ public class PetDogsService {
         PetDogs petDogs = petDogsRepository.findById(petId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려견 정보입니다."));
 
-        petDogs.updatePetDogs(params.toEntity().getPetName(), params.toEntity().getPetSex(),
-                params.toEntity().getPetBreed(), params.toEntity().getPetOld(), params.toEntity().getDisease(),
-                params.toEntity().getNeutered(), params.toEntity().getMissed(),
-                params.toEntity().getMissLocation_city(), params.toEntity().getMissLocation_gu(), params.toEntity().getMissLocation_dong(),
-                params.toEntity().getMissTime(), params.toEntity().getModifiedDate());
+        petDogs.updatePetDogs(params.getPetName(), params.getPetSex(), params.getPetBreed(),
+                params.getPetOld(), params.getDisease(), params.getNeutered(), params.getMissed(),
+                params.getMissLocation_city(), params.getMissLocation_gu(), params.getMissLocation_dong(), params.getMissTime());
 
         return petId;
     }
@@ -72,6 +70,14 @@ public class PetDogsService {
     @Transactional
     public void deleteById(Long petId){
         petDogsRepository.deleteById(petId);
+    }
+
+    /**
+     * 전체 유기견 목록 조회
+     */
+    public List<PetResponseDTO> findAllStray() {
+        List<PetDogs> list = petDogsRepository.findByMissedIsTrue();
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
     }
 
 }

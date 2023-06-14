@@ -2,13 +2,16 @@ package com.idog.FOPPY.dto.pet;
 
 import com.idog.FOPPY.entity.PetDogs;
 import com.idog.FOPPY.entity.breedState;
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor
 public class PetRequestDTO {
 
-    private Long petId;
     private String petName;
     private Boolean petSex;
     private breedState petBreed;
@@ -22,9 +25,9 @@ public class PetRequestDTO {
     private LocalDateTime missTime;
 
 
+    @Builder
     public PetDogs toEntity() {
         return PetDogs.builder()
-                .petId(petId)
                 .petName(petName)
                 .petSex(petSex)
                 .petBreed(petBreed)

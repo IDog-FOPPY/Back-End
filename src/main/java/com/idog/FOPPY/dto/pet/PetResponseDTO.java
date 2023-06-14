@@ -2,9 +2,11 @@ package com.idog.FOPPY.dto.pet;
 
 import com.idog.FOPPY.entity.PetDogs;
 import com.idog.FOPPY.entity.breedState;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class PetResponseDTO {
     private Long petId;
     private String petName;
@@ -19,7 +21,6 @@ public class PetResponseDTO {
     private String missLocation_dong;
     private LocalDateTime missTime;
     private LocalDateTime createdDate = LocalDateTime.now();
-    private LocalDateTime modifiedDate;
 
     public PetResponseDTO(PetDogs entity) {
         this.petId = entity.getPetId();
@@ -35,6 +36,5 @@ public class PetResponseDTO {
         this.missLocation_dong = entity.getMissLocation_dong();
         this.missTime = entity.getMissTime();
         this.createdDate = entity.getCreatedDate();
-        this.modifiedDate = entity.getModifiedDate();
     }
 }

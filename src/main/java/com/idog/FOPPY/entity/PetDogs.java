@@ -26,7 +26,7 @@ public class PetDogs {
     private LocalDateTime missTime; // 실종 시간
 
     private final LocalDateTime createdDate = LocalDateTime.now(); // 생성일
-    private LocalDateTime modifiedDate; // 수정일
+    private LocalDateTime modifiedDate = LocalDateTime.now(); // 수정일
 
     @Builder
     public PetDogs(Long petId, String petName, Boolean petSex, breedState petBreed, Long petOld, String disease,
@@ -49,7 +49,7 @@ public class PetDogs {
     public void updatePetDogs(String petName, Boolean petSex, breedState petBreed, Long petOld,
                               String disease, Boolean neutered,Boolean missed,
                               String missLocation_city, String missLocation_gu, String missLocation_dong,
-                              LocalDateTime missTime, LocalDateTime modifiedDate) {
+                              LocalDateTime missTime) {
         this.petName = petName;
         this.petSex = petSex;
         this.petBreed = petBreed;
@@ -61,7 +61,6 @@ public class PetDogs {
         this.missLocation_gu = missLocation_gu;
         this.missLocation_dong = missLocation_dong;
         this.missTime = missTime;
-        this.modifiedDate = LocalDateTime.now();
     }
 
 }
