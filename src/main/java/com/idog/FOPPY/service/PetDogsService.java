@@ -57,8 +57,9 @@ public class PetDogsService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려견 정보입니다."));
 
         petDogs.updatePetDogs(params.getPetName(), params.getPetSex(), params.getPetBreed(),
-                params.getPetOld(), params.getDisease(), params.getNeutered(), params.getMissed(),
-                params.getMissCity(), params.getMissGu(), params.getMissDong(), params.getMissTime());
+                params.getPetOld(), params.getDisease(), params.getNeutered(), params.getMissDetail(), params.getMissed(),
+                params.getMissCity(), params.getMissGu(), params.getMissDong(), params.getMissDetail(),
+                params.getMissDate(), params.getMissTime(), params.getEtc());
 
         return petId;
     }

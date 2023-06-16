@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @AutoConfigureTestEntityManager
@@ -27,17 +29,21 @@ public class PetDogsTest {
     void save() {
         // 1. 반려견 파라미터 생성
         PetDogs params = PetDogs.builder()
-                .petName("바둑이")
+                .petName("장미")
                 .petSex(true)
-                .petBreed(breedState.비글)
-                .petOld(4L)
+                .petBreed(breedState.사모예드)
+                .petOld(3L)
                 .disease(null)
                 .neutered(true)
+                .note(null)
                 .missed(true)
                 .missCity("서울특별시")
-                .missGu("영등포구")
-                .missDong("문래동")
-                .missTime(LocalDateTime.now())
+                .missGu("동작구")
+                .missDong("상도동")
+                .missDetail(null)
+                .missDate(LocalDate.of(2023,06,14))
+                .missTime(LocalTime.of(19,47))
+                .etc(null)
                 .build();
 
         // 2.  저장
@@ -61,35 +67,14 @@ public class PetDogsTest {
     void delete() {
 
         // 1. 반려견 조회
-        PetDogs entity1 = petdogsrepository.findById((long) 17).get();
-        System.out.println(entity1);
+        PetDogs entity1 = petdogsrepository.findById((long) 21).get();
+
+
         // 2. 반려견 삭제
         petdogsrepository.delete(entity1);
+
     }
 
-    @Test
-    void update() {
-
-        PetDogs petDogs = petdogsrepository.findById((long)12).get();
-        PetDogs params = PetDogs.builder()
-                .petId(12L)
-                .petName("일진")
-                .petSex(false)
-                .petBreed(breedState.포메라니안)
-                .petOld(11L)
-                .disease("기관지 협착증")
-                .neutered(true)
-                .missed(false)
-                .missCity(null)
-                .missGu(null)
-                .missDong(null)
-                .missTime(null)
-                .build();
-
-        petDogs.updatePetDogs(params.getPetName(), params.getPetSex(), params.getPetBreed(),
-                params.getPetOld(), params.getDisease(), params.getNeutered(), params.getMissed(),
-                params.getMissCity(), params.getMissGu(), params.getMissDong(), params.getMissTime());
-    }
 }
 
 

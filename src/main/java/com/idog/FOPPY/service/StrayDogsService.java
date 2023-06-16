@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,11 @@ public class StrayDogsService {
      */
     public List<PetResponseDTO> findByBreed(breedState petBreed) {
         List<PetDogs> list = petDogsRepository.findByPetBreed(petBreed);
+
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
     }
 
@@ -39,6 +47,25 @@ public class StrayDogsService {
      */
     public List<PetResponseDTO> findByLocation(String gu){
         List<PetDogs> list = petDogsRepository.findByMissGu(gu);
+
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
     }
+
+    /**
+     * 날짜별 소팅
+     */
+    public List<PetResponseDTO> findByDate(LocalDate date){
+        List<PetDogs> list = petDogsRepository.findByMissDate(date);
+
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
+
 }
