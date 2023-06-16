@@ -1,8 +1,8 @@
 package com.idog.FOPPY.controller;
 
-import com.idog.FOPPY.domain.dto.MemberDTO;
+import com.idog.FOPPY.dto.member.MemberDTO;
 import com.idog.FOPPY.service.MemberService;
-import lombok.AllArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +17,7 @@ public class MemberController {
 
      private final MemberService memberService;
 
+    @Operation(summary = "회원가입")
     @PostMapping("/join")
     public ResponseEntity<String> saveMember(MemberDTO memberDTO) {
 //        return memberService.saveMember(memberDTO);
@@ -25,6 +26,7 @@ public class MemberController {
 //        return "redirect:/";
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<String> login(MemberDTO memberDTO) {
         String token = memberService.login(memberDTO);

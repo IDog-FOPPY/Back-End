@@ -1,16 +1,16 @@
 package com.idog.FOPPY.repository;
 
-import com.idog.FOPPY.domain.MemberEntity;
+import com.idog.FOPPY.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    public MemberEntity findByUid(Long uid);
+    public Member findByUid(Long uid);
 
-    Optional<MemberEntity> findByUsername(String username);
+    Optional<Member> findByUsername(String username);
 
 }

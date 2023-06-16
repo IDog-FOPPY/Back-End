@@ -1,6 +1,6 @@
-package com.idog.FOPPY.domain.dto;
+package com.idog.FOPPY.dto.member;
 
-import com.idog.FOPPY.domain.MemberEntity;
+import com.idog.FOPPY.entity.Member;
 import lombok.*;
 
 @Data
@@ -10,8 +10,8 @@ public class MemberDTO {
     private String username;
     private String password;
 
-    public MemberEntity toEntity() {
-        return MemberEntity.builder()
+    public Member toEntity() {
+        return Member.builder()
 //                .uid(uid)
                 .username(username)
                 .password(password)

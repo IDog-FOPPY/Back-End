@@ -1,4 +1,4 @@
-package com.idog.FOPPY.domain;
+package com.idog.FOPPY.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.util.Collection;
 @Data
 @Entity(name="member")
 @NoArgsConstructor
-public class MemberEntity implements UserDetails {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class MemberEntity implements UserDetails {
     private LocalDateTime createdAt;
 
     @Builder
-    public MemberEntity(
+    public Member(
             Long uid,
             String username,
             String password,

@@ -1,17 +1,14 @@
 package com.idog.FOPPY.service;
 
-import com.idog.FOPPY.domain.MemberEntity;
-import com.idog.FOPPY.domain.dto.MemberDTO;
+import com.idog.FOPPY.entity.Member;
+import com.idog.FOPPY.dto.member.MemberDTO;
 import com.idog.FOPPY.exception.AppException;
 import com.idog.FOPPY.exception.ErrorCode;
 import com.idog.FOPPY.repository.MemberRepository;
 import com.idog.FOPPY.utils.JwtUtil;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +43,7 @@ public class MemberService {
     public String login(MemberDTO memberDTO) {
 
         // username 없음
-        MemberEntity member = memberRepository.findByUsername(memberDTO.getUsername())
+        Member member = memberRepository.findByUsername(memberDTO.getUsername())
                 .orElseThrow(() -> {
                     throw new AppException(ErrorCode.USERNAME_NOT_FOUND, ": Username is not found");
                 });
