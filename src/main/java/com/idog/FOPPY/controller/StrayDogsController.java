@@ -45,19 +45,19 @@ public class StrayDogsController {
 
     @Operation(summary = "견종별 조회")
     @GetMapping("/StrayDogs/ByBreed/{petBreed}")
-    public List<PetResponseDTO> findByBreed(@PathVariable(name = "견종") final breedState petBreed){
+    public List<PetResponseDTO> findByBreed(@PathVariable(name = "petBreed") final breedState petBreed){
         return strayDogsService.findByBreed(petBreed);
     }
 
     @Operation(summary = "지역별 조회")
     @GetMapping("/StrayDogs/ByLocation/{missGu}")
-    public List<PetResponseDTO> findByLocation(@PathVariable(name = "실종 지역(구)") final String missGu){
+    public List<PetResponseDTO> findByLocation(@PathVariable(name = "missGu") final String missGu){
         return strayDogsService.findByLocation(missGu);
     }
 
     @Operation(summary = "날짜별 조회")
     @GetMapping("/StrayDogs/ByDate/{missDate}")
-    public List<PetResponseDTO> findByDate(@PathVariable(name = "실종 날짜") final LocalDate date){
+    public List<PetResponseDTO> findByDate(@PathVariable(name = "missDate") final LocalDate date){
         return strayDogsService.findByDate(date);
     }
 

@@ -37,8 +37,6 @@ public class PetRequestDTO {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate missDate;
 
-
-
     @Builder
     public PetDogs toEntity() {
         return PetDogs.builder()
