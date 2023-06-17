@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  AWS_REGION: ap-northeast-2
+  AWS_REGION: us-east-1
   S3_BUCKET_NAME: foppy-git-action
   CODE_DEPLOY_APPLICATION_NAME: foppy-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: foppy-codedeploy-app-group
