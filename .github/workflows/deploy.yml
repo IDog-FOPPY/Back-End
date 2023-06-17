@@ -35,7 +35,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # secret 세팅
+    # application 세팅
     - name: Set yml file
     - uses: actions/checkout@v2
     - run: touch /home/ubuntu/app/src/main/resources/application.yml
