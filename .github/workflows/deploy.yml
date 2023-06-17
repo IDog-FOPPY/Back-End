@@ -37,18 +37,14 @@ jobs:
 
     # secret 세팅
     - name: Set yml file
-      uses: microsoft/variable-substitution@v1
+    - uses: actions/checkout@v2
+    - run: touch /home/ubuntu/app/src/main/resources/application.yml
+    - run: echo "${{secrets.APPLICATION}}" > /home/ubuntu/app/src/main/resources/application.yml
+    - uses: actions/upload-artifact@v2
       with:
-        files: ./app/src/main/resources/application.yml
-      env:
-        spring.datasource.url: ${{ secrets.DB_URL }}
-        spring.datasource.username: ${{ secrets.DB_USER }}
-        spring.datasource.password: ${{ secrets.DB_PASSWORD }}
-        spring.jwt.secret: ${{ secrets.JWT_SECRET }}
-        cloud.aws.s3.bucket: ${{ secrets.BUCKET_NAME }}
-        cloud.aws.s3.credentials.accessKey: ${{ secrets.ACCESS_KEY }}
-        cloud.aws.s3.credentials.secretKey: ${{ secrets.SECRET_KEY }}
-
+        name: application.yml
+        path: ./src/main/resources/application.yml
+        
     # (3) Gradle build (Test 제외)
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
