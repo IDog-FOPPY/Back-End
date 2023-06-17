@@ -34,6 +34,10 @@ public class PetDogs {
 
     private final LocalDateTime createdDate = LocalDateTime.now(); // 생성일
 
+    @ManyToOne
+    @JoinColumn(name = "memberUid")
+    private Member member;
+
     @Builder
     public PetDogs(Long petId, String petName, Boolean petSex, breedState petBreed, Long petOld, String disease,
                    Boolean neutered, String note, String missCity, String missGu, String missDong, String missDetail,
