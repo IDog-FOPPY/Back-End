@@ -45,51 +45,21 @@ public class StrayDogsController {
 
     @Operation(summary = "견종별 조회")
     @GetMapping("/StrayDogs/ByBreed/{petBreed}")
-    public List<PetResponseDTO> findByBreed(@PathVariable(name = "petBreed") final breedState petBreed){
+    public List<PetResponseDTO> findByBreed(@PathVariable(name = "견종") final breedState petBreed){
         return strayDogsService.findByBreed(petBreed);
     }
 
     @Operation(summary = "지역별 조회")
     @GetMapping("/StrayDogs/ByLocation/{missGu}")
-    public List<PetResponseDTO> findByLocation(@PathVariable(name = "missGu") final String missGu){
+    public List<PetResponseDTO> findByLocation(@PathVariable(name = "실종 지역(구)") final String missGu){
         return strayDogsService.findByLocation(missGu);
     }
 
     @Operation(summary = "날짜별 조회")
     @GetMapping("/StrayDogs/ByDate/{missDate}")
-    public List<PetResponseDTO> findByDate(@PathVariable(name = "missDate") final LocalDate date){
+    public List<PetResponseDTO> findByDate(@PathVariable(name = "실종 날짜") final LocalDate date){
         return strayDogsService.findByDate(date);
     }
-
-    @Operation(summary = "날짜+지역 조회")
-    @GetMapping("/StrayDogs/ByDateLocation/{missDate},{missGu}")
-    public List<PetResponseDTO> findByDateLocation(@PathVariable(name = "missDate") final LocalDate date,
-                                                   @PathVariable(name = "missGu") final String missGu){
-        return strayDogsService.findByDateLocation(date, missGu);
-    }
-
-    @Operation(summary = "날짜+견종 조회")
-    @GetMapping("/StrayDogs/ByDatePetBreed/{missDate},{petBreed}")
-    public List<PetResponseDTO> findByDatePetBreed(@PathVariable(name = "missDate") final LocalDate date,
-                                                   @PathVariable(name = "petBreed") final breedState petBreed){
-        return strayDogsService.findByDateBreed(date, petBreed);
-    }
-
-    @Operation(summary = "지역+견종 조회")
-    @GetMapping("/StrayDogs/ByLocationPetBreed/{missGu},{petBreed}")
-    public List<PetResponseDTO> findByDateLocation(@PathVariable(name = "missGu") final String missGu,
-                                                   @PathVariable(name = "petBreed") final breedState petBreed){
-        return strayDogsService.findByLocationBreed(missGu,petBreed);
-    }
-
-    @Operation(summary = "지역+견종+날짜 조회")
-    @GetMapping("/StrayDogs/ByDateLocationPetBreed/{missDate},{missGu},{petBreed}")
-    public List<PetResponseDTO> findByDateLocationBreed(@PathVariable(name = "missDate") final LocalDate date,
-                                                        @PathVariable(name = "missGu") final String missGu,
-                                                   @PathVariable(name = "petBreed") final breedState petBreed){
-        return strayDogsService.findByDateLocationBreed(date, missGu, petBreed);
-    }
-
 
 //    @Operation(summary = "강아지 사진 등록")
 //    @PostMapping("/StrayDogs/uploadFile}")
