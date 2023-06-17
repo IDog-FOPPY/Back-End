@@ -2,7 +2,9 @@ package com.idog.FOPPY.service;
 
 import com.idog.FOPPY.dto.pet.PetRequestDTO;
 import com.idog.FOPPY.dto.pet.PetResponseDTO;
+import com.idog.FOPPY.entity.Member;
 import com.idog.FOPPY.entity.PetDogs;
+import com.idog.FOPPY.repository.MemberRepository;
 import com.idog.FOPPY.repository.PetDogsRepository;
 
 import jakarta.transaction.Transactional;
@@ -20,13 +22,19 @@ public class PetDogsService {
     @Autowired
     private final PetDogsRepository petDogsRepository;
 
+    @Autowired
+    private final MemberService memberService;
+
+
+
     /**
      * 반려견 등록
      */
     @Transactional
-    public Long save(final PetRequestDTO params) {
-
+    public Long save( Long memId ,final PetRequestDTO params) {
         PetDogs petDogs = petDogsRepository.save(params.toEntity());
+        Long petID = petDogs.getPetId();
+        memberService.updatePetId(memId, petID);
         return petDogs.getPetId();
     }
 
@@ -39,7 +47,7 @@ public class PetDogsService {
     }
 
     /**
-     * ID로 반려견 상세정보 조회
+     * PetID로 반려견 상세정보 조회
      */
     @Transactional
     public PetResponseDTO findById(final Long petId) {
