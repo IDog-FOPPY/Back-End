@@ -61,6 +61,36 @@ public class StrayDogsController {
         return strayDogsService.findByDate(date);
     }
 
+    @Operation(summary = "날짜+지역 조회")
+    @GetMapping("/StrayDogs/ByDateLocation/{missDate},{missGu}")
+    public List<PetResponseDTO> findByDateLocation(@PathVariable(name = "missDate") final LocalDate date,
+                                                   @PathVariable(name = "missGu") final String missGu){
+        return strayDogsService.findByDateLocation(date, missGu);
+    }
+
+    @Operation(summary = "날짜+견종 조회")
+    @GetMapping("/StrayDogs/ByDatePetBreed/{missDate},{petBreed}")
+    public List<PetResponseDTO> findByDatePetBreed(@PathVariable(name = "missDate") final LocalDate date,
+                                                   @PathVariable(name = "petBreed") final breedState petBreed){
+        return strayDogsService.findByDateBreed(date, petBreed);
+    }
+
+    @Operation(summary = "지역+견종 조회")
+    @GetMapping("/StrayDogs/ByLocationPetBreed/{missGu},{petBreed}")
+    public List<PetResponseDTO> findByDateLocation(@PathVariable(name = "missGu") final String missGu,
+                                                   @PathVariable(name = "petBreed") final breedState petBreed){
+        return strayDogsService.findByLocationBreed(missGu,petBreed);
+    }
+
+    @Operation(summary = "지역+견종+날짜 조회")
+    @GetMapping("/StrayDogs/ByDateLocationPetBreed/{missDate},{missGu},{petBreed}")
+    public List<PetResponseDTO> findByDateLocationBreed(@PathVariable(name = "missDate") final LocalDate date,
+                                                        @PathVariable(name = "missGu") final String missGu,
+                                                        @PathVariable(name = "petBreed") final breedState petBreed){
+        return strayDogsService.findByDateLocationBreed(date, missGu, petBreed);
+    }
+
+
     @PostMapping("/StrayDogs/noseIdent")
     public ResponseEntity<String> noseIdent(
             @RequestParam("file") MultipartFile file,
