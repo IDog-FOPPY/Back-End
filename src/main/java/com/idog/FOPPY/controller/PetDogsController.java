@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "반려견 API")
 @RestController
@@ -24,6 +25,12 @@ class PetDogsController {
     @PostMapping("/PetDogs/save/{uid}")
     public List<Long> save(@PathVariable final Long uid, @RequestBody final PetRequestDTO params) {
         return petDogsService.save(uid, params);
+    }
+
+    @Operation(summary = "반려견 이미지 등록")
+    @PostMapping("/PetDogs/uploadImages/{petId}")
+    public List<String> uploadImages(@PathVariable(name = "petId") final Long petId, @RequestParam("files") MultipartFile[] files){
+        return petDogsService.uploadImages(petId, files);
     }
 
 
