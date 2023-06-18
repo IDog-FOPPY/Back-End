@@ -5,9 +5,9 @@ import com.idog.FOPPY.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -31,5 +31,11 @@ public class MemberController {
     public ResponseEntity<String> login(MemberDTO memberDTO) {
         String token = memberService.login(memberDTO);
         return ResponseEntity.ok(token);
+    }
+
+    @Operation(summary = "유저의 반려견Id 리스트 조회")
+    @GetMapping("/getPet/{uid}")
+    public List<Long> getPetId(@PathVariable Long uid){
+        return memberService.getPetId(uid);
     }
 }

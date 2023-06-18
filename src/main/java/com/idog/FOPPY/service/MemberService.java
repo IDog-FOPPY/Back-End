@@ -1,7 +1,9 @@
 package com.idog.FOPPY.service;
 
+import com.idog.FOPPY.dto.pet.PetResponseDTO;
 import com.idog.FOPPY.entity.Member;
 import com.idog.FOPPY.dto.member.MemberDTO;
+import com.idog.FOPPY.entity.PetDogs;
 import com.idog.FOPPY.exception.AppException;
 import com.idog.FOPPY.exception.ErrorCode;
 import com.idog.FOPPY.repository.MemberRepository;
@@ -11,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +62,11 @@ public class MemberService {
         String token = JwtUtil.createJwt(member.getUsername(), secretKey, expireTimeMs);
 
         return token;
+    }
+
+    public List<Long> getPetId(Long uid) {
+        Member member = memberRepository.findById(uid)
+                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
+        return member.getPetIds();
     }
 }

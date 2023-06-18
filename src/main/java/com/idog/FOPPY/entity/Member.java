@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity(name="member")
@@ -22,10 +23,13 @@ public class Member implements UserDetails {
     @Column(unique = true)
     private String username;
 
-    @Column
     private String password;
 
-    @Column
+//    @OneToMany(mappedBy = "member")
+//    private List<PetDogs> petDogs;
+
+    private List<Long> petIds;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -34,13 +38,21 @@ public class Member implements UserDetails {
             Long uid,
             String username,
             String password,
+            List<Long> petIds,
             LocalDateTime createdAt) {
         this.uid = uid;
         this.username = username;
         this.password = password;
+        this.petIds = petIds;
         this.createdAt = createdAt;
     }
 
+    public void addPet(Long petId){
+        if (petIds == null) {
+            petIds = new ArrayList<>();
+        }
+        petIds.add(petId);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

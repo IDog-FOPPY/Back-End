@@ -3,6 +3,8 @@ package com.idog.FOPPY.dto.member;
 import com.idog.FOPPY.entity.Member;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 public class MemberDTO {
 

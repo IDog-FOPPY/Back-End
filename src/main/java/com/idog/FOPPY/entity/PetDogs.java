@@ -35,7 +35,7 @@ public class PetDogs {
     private final LocalDateTime createdDate = LocalDateTime.now(); // 생성일
 
     @ManyToOne
-    @JoinColumn(name = "memberUid")
+    @JoinColumn(name = "member_uid")
     private Member member;
 
     @Builder
