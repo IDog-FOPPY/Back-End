@@ -55,6 +55,7 @@ public class PetDogsService {
         PetDogs petDogs = petDogsRepository.save(params.toEntity());
 
         member.addPet(petDogs.getPetId());
+        petDogs.setMember(member);
 
         return member.getPetIds();
     }
