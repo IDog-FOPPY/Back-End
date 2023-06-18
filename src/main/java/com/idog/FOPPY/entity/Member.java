@@ -23,6 +23,7 @@ public class Member implements UserDetails {
     @Column(unique = true)
     private String username;
 
+    @Column
     private String password;
 
 //    @OneToMany(mappedBy = "member")
