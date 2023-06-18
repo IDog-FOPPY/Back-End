@@ -39,8 +39,8 @@ jobs:
     - name: Set yml file
       uses: actions/checkout@v2
       
-    - run: touch /home/ubuntu/app/src/main/resources/application.yml
-    - run: echo "${{secrets.APPLICATION}}" > /home/ubuntu/app/src/main/resources/application.yml
+    - run: touch ./src/main/resources/application.yml
+    - run: echo "${{secrets.APPLICATION}}" > ./src/main/resources/application.yml
     
     - uses: actions/upload-artifact@v2
       with:
@@ -54,12 +54,12 @@ jobs:
         arguments: clean build -x test
         
     # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v1
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: ${{ env.AWS_REGION }}
 
     # (5) 빌드 결과물을 S3 버킷에 업로드
     - name: Upload to AWS S3
