@@ -1,6 +1,7 @@
 package com.idog.FOPPY.service;
 
 import com.idog.FOPPY.dto.pet.PetResponseDTO;
+import com.idog.FOPPY.dto.member.LoginResponse;
 import com.idog.FOPPY.entity.Member;
 import com.idog.FOPPY.dto.member.MemberDTO;
 import com.idog.FOPPY.entity.PetDogs;
@@ -41,11 +42,12 @@ public class MemberService {
 
         //패스워드 암호화
         memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
+
         memberRepository.save(memberDTO.toEntity());
         return "SUCCESS";
     }
 
-    public String login(MemberDTO memberDTO) {
+    public LoginResponse login(MemberDTO memberDTO) {
 
         // username 없음
         Member member = memberRepository.findByUsername(memberDTO.getUsername())
@@ -61,7 +63,12 @@ public class MemberService {
 
         String token = JwtUtil.createJwt(member.getUsername(), secretKey, expireTimeMs);
 
-        return token;
+        return LoginResponse.builder()
+                .accessToken(token)
+                .tokenType("Bearer")
+                .id(member.getUid())
+                .username(member.getUsername())
+                .build();
     }
 
     public List<Long> getPetId(Long uid) {

@@ -1,10 +1,15 @@
 package com.idog.FOPPY.controller;
 
+import com.idog.FOPPY.dto.member.LoginResponse;
 import com.idog.FOPPY.dto.member.MemberDTO;
 import com.idog.FOPPY.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +24,7 @@ public class MemberController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/join")
-    public ResponseEntity<String> saveMember(MemberDTO memberDTO) {
+    public ResponseEntity<String> saveMember(@RequestBody MemberDTO memberDTO) {
 //        return memberService.saveMember(memberDTO);
         return ResponseEntity.ok(memberService.saveMember(memberDTO));
 //        memberService.saveMember(memberDTO);
@@ -28,9 +33,9 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<String> login(MemberDTO memberDTO) {
-        String token = memberService.login(memberDTO);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<LoginResponse> login(@RequestBody MemberDTO memberDTO) {
+        LoginResponse response = memberService.login(memberDTO);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "유저의 반려견Id 리스트 조회")

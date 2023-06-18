@@ -61,30 +61,6 @@ public class StrayDogsController {
         return strayDogsService.findByDate(date);
     }
 
-//    @Operation(summary = "강아지 사진 등록")
-//    @PostMapping("/StrayDogs/uploadFile}")
-//    public ResponseEntity<String> uploadFile(
-//            @RequestParam("file") MultipartFile file,
-//            @RequestParam("dogUid") String dogUid // Add dogUid as a request parameter
-//    ) {
-//        try {
-//            String fileExtension = getFileExtension(file.getOriginalFilename());
-//
-//            // Use the dog's UID as the fileName
-//            String fileName = "/dog" + dogUid + "." + fileExtension;
-//
-//            String fileUrl = "https://" + bucket + fileName;
-//            ObjectMetadata metadata = new ObjectMetadata();
-//            metadata.setContentType(file.getContentType());
-//            metadata.setContentLength(file.getSize());
-//            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
-//            return ResponseEntity.ok(fileUrl);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
     @PostMapping("/StrayDogs/noseIdent")
     public ResponseEntity<String> noseIdent(
             @RequestParam("file") MultipartFile file,
@@ -92,7 +68,7 @@ public class StrayDogsController {
     ) {
         try {
             String fileExtension = getFileExtension(file.getOriginalFilename());
-            String fileName = "/dog" + dogUid + "." + fileExtension;
+            String fileName = "dog/dog" + dogUid + "." + fileExtension;
             String fileUrl = "https://" + bucket + fileName;
 
             ObjectMetadata metadata = new ObjectMetadata();
