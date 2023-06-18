@@ -1,28 +1,49 @@
 package com.idog.FOPPY.service;
 
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.idog.FOPPY.dto.pet.PetRequestDTO;
 import com.idog.FOPPY.dto.pet.PetResponseDTO;
 import com.idog.FOPPY.entity.Member;
 import com.idog.FOPPY.entity.PetDogs;
 import com.idog.FOPPY.repository.MemberRepository;
 import com.idog.FOPPY.repository.PetDogsRepository;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class PetDogsService {
 
-    @Autowired
     private final PetDogsRepository petDogsRepository;
-    @Autowired
     private final MemberRepository memberRepository;
+
+    // AWS S3
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName; // replace with your bucket name
+
+    @Autowired
+    public PetDogsService(PetDogsRepository petDogsRepository, MemberRepository memberRepository) {
+        this.petDogsRepository = petDogsRepository;
+        this.memberRepository = memberRepository;
+    }
 
     /**
      * 반려견 등록
@@ -72,7 +93,6 @@ public class PetDogsService {
         return petId;
     }
 
-
     /**
      * 반려견 정보 삭제
      */
@@ -81,6 +101,41 @@ public class PetDogsService {
         petDogsRepository.deleteById(petId);
     }
 
+    @Transactional
+    public List<String> uploadImages(final Long petId, MultipartFile[] files) {
+        List<String> imageUrls = new ArrayList<>();
+        Member member = memberRepository.findById(petId).orElse(null);
+        AmazonS3 s3client = AmazonS3ClientBuilder.standard()
+                .withRegion(Regions.AP_NORTHEAST_2) // Change this to your bucket region
+                .build();
+
+
+        String fileExtension = getFileExtension(files[0].getOriginalFilename());
+
+        for (int i = 0; i < files.length; i++) {
+            String filename = "dog/" + member.getUid() + "_" + (i + 1) + "." + fileExtension;
+
+            try {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(files[i].getContentType());
+                metadata.setContentLength(files[i].getSize());
+
+                s3client.putObject(bucketName, filename, files[i].getInputStream(), metadata);
+
+                // image URL
+                String imageUrl = String.format("https://%s.s3.amazonaws.com/%s", bucketName, filename);
+                imageUrls.add(imageUrl);
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to upload the file", e);
+            }
+        }
+
+        return imageUrls;
+    }
+
+    private String getFileExtension(String originalFilename) {
+        return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+    }
 }
 
 
