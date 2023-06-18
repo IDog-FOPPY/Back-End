@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
+                        .requestMatchers("/ws/**").authenticated()
                         .anyRequest().permitAll() // FIXME
                 )
                 .addFilterBefore(new JwtFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class)
@@ -47,5 +48,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
