@@ -1,5 +1,6 @@
 package com.idog.FOPPY.controller;
 
+import com.idog.FOPPY.dto.member.LoginResponse;
 import com.idog.FOPPY.dto.member.MemberDTO;
 import com.idog.FOPPY.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,14 +30,8 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-<<<<<<< HEAD
-    public ResponseEntity<String> login(MemberDTO memberDTO) {
-        String token = memberService.login(memberDTO);
-        return ResponseEntity.ok(token);
-=======
     public ResponseEntity<LoginResponse> login(@RequestBody MemberDTO memberDTO) {
         LoginResponse response = memberService.login(memberDTO);
         return ResponseEntity.ok(response);
->>>>>>> 3049d46 ([Fix] 요청을 json 형식으로 받도록)
     }
 }
