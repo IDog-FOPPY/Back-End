@@ -36,21 +36,21 @@ class PetDogsController {
 
     @Operation(summary = "반려견 상세정보 조회")
     @GetMapping("/PetDogs/{petId}")
-    public PetResponseDTO findById(@PathVariable(name = "반려견 ID") final Long petId){
+    public PetResponseDTO findById(@PathVariable(name = "petId") final Long petId){
         return petDogsService.findById(petId);
     }
 
 
     @Operation(summary = "반려견 정보 수정")
     @PatchMapping("/PetDogs/{petId}")
-    public Long save(@PathVariable(name = "반려견 ID") final Long petId,@RequestBody final PetRequestDTO params) {
+    public Long save(@PathVariable(name = "petId") final Long petId,@RequestBody final PetRequestDTO params) {
         return petDogsService.update(petId, params);
     }
 
 
     @Operation(summary = "반려견 정보 삭제")
     @DeleteMapping("/PetDogs/{petId}")
-    public void delete(@PathVariable(name = "반려견 ID") final Long petId){
+    public void delete(@PathVariable(name = "petId") final Long petId){
         petDogsService.deleteById(petId);
     }
 
