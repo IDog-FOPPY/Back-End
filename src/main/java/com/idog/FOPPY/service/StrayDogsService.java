@@ -68,4 +68,52 @@ public class StrayDogsService {
         return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
     }
 
+    /**
+     * 날짜 + 지역 소팅
+     */
+    public List<PetResponseDTO> findByDateLocation(LocalDate date, String gu){
+        List<PetDogs> list = petDogsRepository.findByMissDateAndMissGu(date, gu);
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
+
+    /**
+     * 날짜 + 견종 소팅
+     */
+    public List<PetResponseDTO> findByDateBreed(LocalDate date, breedState petBreed){
+        List<PetDogs> list = petDogsRepository.findByMissDateAndPetBreed(date, petBreed);
+
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
+
+    /**
+     * 지역 + 견종 소팅
+     */
+    public List<PetResponseDTO> findByLocationBreed(String missGu, breedState petBreed){
+        List<PetDogs> list = petDogsRepository.findByMissGuAndPetBreed(missGu, petBreed);
+
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
+
+    /**
+     * 지역+날짜+견종 소팅
+     */
+    public List<PetResponseDTO> findByDateLocationBreed(LocalDate date, String missGu, breedState petBreed){
+        List<PetDogs> list = petDogsRepository.findByMissDateAndMissGuAndPetBreed(date, missGu, petBreed);
+
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return list.stream().map(PetResponseDTO::new).collect(Collectors.toList());
+    }
+
 }

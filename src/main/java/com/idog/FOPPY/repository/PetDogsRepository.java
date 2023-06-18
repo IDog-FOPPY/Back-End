@@ -19,4 +19,12 @@ public interface PetDogsRepository extends JpaRepository<PetDogs, Long> {
     List<PetDogs> findByMissGu(String missGu);
 
     List<PetDogs> findByMissDate(LocalDate date);
+
+    List<PetDogs> findByMissDateAndMissGu(LocalDate date, String missGu);
+
+    List<PetDogs> findByMissDateAndPetBreed(LocalDate date, breedState petBreed);
+
+    List<PetDogs> findByMissGuAndPetBreed(String missGu, breedState petBreed);
+
+    List<PetDogs> findByMissDateAndMissGuAndPetBreed(LocalDate date, String missGu, breedState petBreed);
 }
