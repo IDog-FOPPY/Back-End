@@ -14,8 +14,7 @@ public class MemberRequestDTO {
     private String email;
     private String phoneNum;
     private String address;
-    private String profileURL;
-    private List<Long> petIDs;
+
 
     public Member toEntity() {
         return Member.builder()
@@ -24,8 +23,6 @@ public class MemberRequestDTO {
                 .email(email)
                 .phoneNum(phoneNum)
                 .address(address)
-                .profileURL(profileURL)
-                .petIDs(petIDs)
                 .build();
     }
 }

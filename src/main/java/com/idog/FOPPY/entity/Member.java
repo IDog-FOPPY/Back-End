@@ -23,28 +23,28 @@ public class Member implements UserDetails {
     @Column(unique = true)
     private String username;
 
-    @Column
     private String password;
-
-//    @OneToMany(mappedBy = "member")
-//    private List<PetDogs> petDogs;
-
     private List<Long> petIds;
+    private String email;
+    private String phoneNum;
+    private String address;
+
+    @OneToMany(mappedBy = "member")
+    private List<PetDogs> petDogs;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public Member(
-            Long uid,
-            String username,
-            String password,
-            List<Long> petIds,
-            LocalDateTime createdAt) {
+    public Member(Long uid, String username, String password, List<Long> petIds,
+            String email, String phoneNum, String address, LocalDateTime createdAt) {
         this.uid = uid;
         this.username = username;
         this.password = password;
         this.petIds = petIds;
+        this.email = email;
+        this.phoneNum = phoneNum;
+        this.address = address;
         this.createdAt = createdAt;
     }
 
@@ -53,6 +53,14 @@ public class Member implements UserDetails {
             petIds = new ArrayList<>();
         }
         petIds.add(petId);
+    }
+
+    public void update(String username, String password, String email, String phoneNum, String address) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phoneNum = phoneNum;
+        this.address = address;
     }
 
     @Override
