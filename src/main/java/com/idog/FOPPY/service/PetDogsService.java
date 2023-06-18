@@ -51,7 +51,9 @@ public class PetDogsService {
     @Transactional
     public List<Long> save(final Long uid, final PetRequestDTO params) {
 
-        Member member = memberRepository.findById(uid).orElse(null);
+        Member member = memberRepository.findById(uid)
+                .orElseThrow(() -> new IllegalArgumentException("해당 uid를 가진 멤버가 없습니다: " + uid));
+
         PetDogs petDogs = petDogsRepository.save(params.toEntity());
 
         member.addPet(petDogs.getPetId());
@@ -101,41 +103,7 @@ public class PetDogsService {
         petDogsRepository.deleteById(petId);
     }
 
-    @Transactional
-    public List<String> uploadImages(final Long petId, MultipartFile[] files) {
-        List<String> imageUrls = new ArrayList<>();
-        Member member = memberRepository.findById(petId).orElse(null);
-        AmazonS3 s3client = AmazonS3ClientBuilder.standard()
-                .withRegion(Regions.AP_NORTHEAST_2) // Change this to your bucket region
-                .build();
 
-
-        String fileExtension = getFileExtension(files[0].getOriginalFilename());
-
-        for (int i = 0; i < files.length; i++) {
-            String filename = "dog/" + member.getUid() + "_" + (i + 1) + "." + fileExtension;
-
-            try {
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentType(files[i].getContentType());
-                metadata.setContentLength(files[i].getSize());
-
-                s3client.putObject(bucketName, filename, files[i].getInputStream(), metadata);
-
-                // image URL
-                String imageUrl = String.format("https://%s.s3.amazonaws.com/%s", bucketName, filename);
-                imageUrls.add(imageUrl);
-            } catch (IOException e) {
-                throw new IllegalStateException("Failed to upload the file", e);
-            }
-        }
-
-        return imageUrls;
-    }
-
-    private String getFileExtension(String originalFilename) {
-        return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-    }
 }
 
 
