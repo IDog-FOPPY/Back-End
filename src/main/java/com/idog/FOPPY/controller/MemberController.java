@@ -59,28 +59,28 @@ public class MemberController {
         return ResponseEntity.ok("Logged out successfully");
       
     @Operation(summary = "유저의 반려견Id 리스트 조회")
-    @GetMapping("/getPet/{uid}")
-    public List<Long> getPetId(@PathVariable Long uid){
-        return memberService.getPetId(uid);
+    @GetMapping("/getPet/{id}")
+    public List<Long> getPetId(@PathVariable Long id){
+        return memberService.getPetId(id);
     }
 
 
     @Operation(summary = "사용자 상세정보 조회")
-    @GetMapping("getDetail/{uid}")
-    public MemberResponseDTO findById(@PathVariable(name = "uid") final Long uid){
-        return memberService.findById(uid);
+    @GetMapping("getDetail/{id}")
+    public MemberResponseDTO findById(@PathVariable(name = "id") final Long id){
+        return memberService.findById(id);
     }
 
 
     @Operation(summary = "사용자 정보 수정")
-    @PatchMapping("/update/{uid}")
-    public Long update(@PathVariable(name = "uid") final Long uid,@RequestBody final MemberRequestDTO params) {
-        return memberService.update(uid, params);
+    @PatchMapping("/update/{id}")
+    public Long update(@PathVariable(name = "id") final Long id,@RequestBody final MemberRequestDTO params) {
+        return memberService.update(id, params);
     }
 
 
     @Operation(summary = "사용자 정보 삭제")
-    @DeleteMapping("/delete/{uid}")
-    public void delete(@PathVariable(name = "uid") final Long uid) {memberService.deleteById(uid);
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable(name = "id") final Long id) {memberService.deleteById(id);
     }
 }
