@@ -51,8 +51,8 @@ class PetDogsController {
             @RequestParam("files") MultipartFile[] files
     ) {
         try {
-            if(files.length != 3){
-                return new ResponseEntity<>("Please provide exactly 3 images", HttpStatus.BAD_REQUEST);
+            if(files.length < 3 || files.length > 10){
+                return new ResponseEntity<>("Please provide exactly 3-10 images", HttpStatus.BAD_REQUEST);
             }
 
             List<String> fileUrls;
