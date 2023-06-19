@@ -29,8 +29,8 @@ public class Member implements UserDetails {
     private String phoneNum;
     private String address;
 
-    @OneToMany(mappedBy = "member")
-    private List<PetDogs> petDogs;
+//    @OneToMany(mappedBy = "member")
+//    private List<PetDogs> petDogs;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -53,6 +53,13 @@ public class Member implements UserDetails {
             petIds = new ArrayList<>();
         }
         petIds.add(petId);
+    }
+
+    public void removePet(Long petId){
+        if (petIds == null) {
+            petIds = new ArrayList<>();
+        }
+        petIds.remove(petId);
     }
 
     public void update(String username, String password, String email, String phoneNum, String address) {
