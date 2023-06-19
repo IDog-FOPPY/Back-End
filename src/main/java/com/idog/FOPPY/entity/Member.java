@@ -2,23 +2,22 @@ package com.idog.FOPPY.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Data
 @Entity(name="member")
-@NoArgsConstructor
-public class Member implements UserDetails {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uid;
+    @Column(name="id", updatable = false)
+    private Long id;
 
     @Column(unique = true)
     private String username;
@@ -32,45 +31,51 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "member")
     private List<PetDogs> petDogs;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+//    @CreatedDate
+//    @Column(name="created_at")
+//    private LocalDateTime createdAt;
+//
+//    @LastModifiedDate
+//    @Column(name="updated_at")
+//    private LocalDateTime updatedAt;
 
     @Builder
-    public Member(Long uid, String username, String password, List<Long> petIds,
-            String email, String phoneNum, String address, LocalDateTime createdAt) {
-        this.uid = uid;
+    public Member(String username, String password) {
         this.username = username;
         this.password = password;
-        this.petIds = petIds;
-        this.email = email;
-        this.phoneNum = phoneNum;
-        this.address = address;
-        this.createdAt = createdAt;
     }
 
-    public void addPet(Long petId){
-        if (petIds == null) {
-            petIds = new ArrayList<>();
-        }
-        petIds.add(petId);
-    }
+//     @Builder
+//     public Member(Long uid, String username, String password, List<Long> petIds,
+//             String email, String phoneNum, String address, LocalDateTime createdAt) {
+//         this.uid = uid;
+//         this.username = username;
+//         this.password = password;
+//         this.petIds = petIds;
+//         this.email = email;
+//         this.phoneNum = phoneNum;
+//         this.address = address;
+//         this.createdAt = createdAt;
+//     }
 
-    public void update(String username, String password, String email, String phoneNum, String address) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phoneNum = phoneNum;
-        this.address = address;
-    }
+//     public void addPet(Long petId){
+//         if (petIds == null) {
+//             petIds = new ArrayList<>();
+//         }
+//         petIds.add(petId);
+//     }
+
+//     public void update(String username, String password, String email, String phoneNum, String address) {
+//         this.username = username;
+//         this.password = password;
+//         this.email = email;
+//         this.phoneNum = phoneNum;
+//         this.address = address;
+//     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(() -> {
-            return "ROLE_USER";
-        });
-
-        return collectors;
+        return List.of(new SimpleGrantedAuthority("user"));
     }
 
     @Override

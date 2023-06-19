@@ -1,5 +1,6 @@
 package com.idog.FOPPY.service;
 
+import com.idog.FOPPY.config.jwt.JwtProvider;
 import com.idog.FOPPY.dto.member.MemberRequestDTO;
 import com.idog.FOPPY.dto.member.MemberResponseDTO;
 import com.idog.FOPPY.dto.pet.PetRequestDTO;
@@ -11,11 +12,9 @@ import com.idog.FOPPY.entity.PetDogs;
 import com.idog.FOPPY.exception.AppException;
 import com.idog.FOPPY.exception.ErrorCode;
 import com.idog.FOPPY.repository.MemberRepository;
-import com.idog.FOPPY.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +27,13 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
+    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${spring.jwt.secret}")
-    private String secretKey;
+    private Long accessExpireTimeMs = 60 * 60 * 1000L;  // 1시간
+    private Long refreshExpireTimeMs = 14 * 24 * 60 * 60 * 1000L;  // 14일
 
-    @Value("${spring.jwt.expire}")
-    private Long expireTimeMs;
-    public String saveMember(MemberDTO memberDTO) {
+    public Long saveMember(MemberDTO memberDTO) {
 
         //아이디 중복 체크
         memberRepository.findByUsername(memberDTO.getUsername())
@@ -47,8 +44,7 @@ public class MemberService {
         //패스워드 암호화
         memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
 
-        memberRepository.save(memberDTO.toEntity());
-        return "SUCCESS";
+        return memberRepository.save(memberDTO.toEntity()).getId();
     }
 
     public LoginResponse login(MemberDTO memberDTO) {
@@ -58,62 +54,68 @@ public class MemberService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorCode.USERNAME_NOT_FOUND, ": Username is not found");
                 });
-        log.info(">> username: {}, password: {}", member.getUsername(), member.getPassword());
+//        log.info(">> username: {}, password: {}", member.getUsername(), member.getPassword());
 
         // password 틀림
         if (!passwordEncoder.matches(memberDTO.getPassword(), member.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD, ": Password is incorrect");
         }
 
-        String token = JwtUtil.createJwt(member.getUsername(), secretKey, expireTimeMs);
+        String access_token = jwtProvider.createAccessToken(member, accessExpireTimeMs);
+        String refresh_token = jwtProvider.createRefreshToken(member, refreshExpireTimeMs);
 
         return LoginResponse.builder()
-                .accessToken(token)
+                .accessToken(access_token)
+                .refreshToken(refresh_token)
                 .tokenType("Bearer")
-                .id(member.getUid())
+                .id(member.getId())
                 .username(member.getUsername())
                 .build();
     }
 
-    /**
-     * 견주의 반려견 리스트 조회
-     */
-    public List<Long> getPetId(Long uid) {
-        Member member = memberRepository.findById(uid)
-                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
-        return member.getPetIds();
-    }
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, ": Username is not found"));
+      
+//     /**
+//      * 견주의 반려견 리스트 조회
+//      */
+//     public List<Long> getPetId(Long uid) {
+//         Member member = memberRepository.findById(uid)
+//                                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
+//         return member.getPetIds();
+//     }
 
-    /**
-     * ID로 반려견 상세정보 조회
-     */
-    @Transactional
-    public MemberResponseDTO findById(final Long uid) {
-        Member member = memberRepository.findById(uid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
-        return new MemberResponseDTO(member);
-    }
+//     /**
+//      * ID로 반려견 상세정보 조회
+//      */
+//     @Transactional
+//     public MemberResponseDTO findById(final Long uid) {
+//         Member member = memberRepository.findById(uid)
+//                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
+//         return new MemberResponseDTO(member);
+//     }
 
-    /**
-     * 사용자 정보 수정
-     */
-    @Transactional
-    public Long update(Long uid, MemberRequestDTO params) {
-        Member member = memberRepository.findById(uid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
+//     /**
+//      * 사용자 정보 수정
+//      */
+//     @Transactional
+//     public Long update(Long uid, MemberRequestDTO params) {
+//         Member member = memberRepository.findById(uid)
+//                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 정보입니다."));
 
-        member.update(params.getUsername(), params.getPassword(), params.getEmail(), params.getPhoneNum(), params.getPhoneNum());
+//         member.update(params.getUsername(), params.getPassword(), params.getEmail(), params.getPhoneNum(), params.getPhoneNum());
 
-        return uid;
-    }
+//         return uid;
+//     }
 
 
-    /**
-     * 사용자 정보 삭제
-     */
-    @Transactional
-    public void deleteById(Long uid){
-        memberRepository.deleteById(uid);
-    }
+//     /**
+//      * 사용자 정보 삭제
+//      */
+//     @Transactional
+//     public void deleteById(Long uid){
+//         memberRepository.deleteById(uid);
+//     }
 }
 
