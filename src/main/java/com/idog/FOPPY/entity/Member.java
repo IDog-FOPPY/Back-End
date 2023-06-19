@@ -22,8 +22,14 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(unique = true)
     private String username;
 
-    @Column
     private String password;
+    private List<Long> petIds;
+    private String email;
+    private String phoneNum;
+    private String address;
+
+    @OneToMany(mappedBy = "member")
+    private List<PetDogs> petDogs;
 
 //    @CreatedDate
 //    @Column(name="created_at")
@@ -38,6 +44,34 @@ public class Member extends BaseEntity implements UserDetails {
         this.username = username;
         this.password = password;
     }
+
+//     @Builder
+//     public Member(Long uid, String username, String password, List<Long> petIds,
+//             String email, String phoneNum, String address, LocalDateTime createdAt) {
+//         this.uid = uid;
+//         this.username = username;
+//         this.password = password;
+//         this.petIds = petIds;
+//         this.email = email;
+//         this.phoneNum = phoneNum;
+//         this.address = address;
+//         this.createdAt = createdAt;
+//     }
+
+//     public void addPet(Long petId){
+//         if (petIds == null) {
+//             petIds = new ArrayList<>();
+//         }
+//         petIds.add(petId);
+//     }
+
+//     public void update(String username, String password, String email, String phoneNum, String address) {
+//         this.username = username;
+//         this.password = password;
+//         this.email = email;
+//         this.phoneNum = phoneNum;
+//         this.address = address;
+//     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PetDogsRepository extends JpaRepository<PetDogs, Long> {
@@ -27,4 +28,6 @@ public interface PetDogsRepository extends JpaRepository<PetDogs, Long> {
     List<PetDogs> findByMissGuAndPetBreed(String missGu, breedState petBreed);
 
     List<PetDogs> findByMissDateAndMissGuAndPetBreed(LocalDate date, String missGu, breedState petBreed);
+
+    List<PetDogs> findByMember_Uid(Long uid);
 }
