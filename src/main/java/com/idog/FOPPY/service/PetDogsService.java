@@ -101,6 +101,15 @@ public class PetDogsService {
      */
     @Transactional
     public void deleteById(Long petId){
+
+        PetDogs petDogs = petDogsRepository.findById(petId)
+                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려견 정보입니다."));
+        Long uid = petDogs.getMember().getUid();
+
+        Member member = memberRepository.findById(uid)
+                .orElseThrow(() -> new IllegalArgumentException("해당 uid를 가진 멤버가 없습니다: " + uid));
+        member.removePet(petId);
+
         petDogsRepository.deleteById(petId);
     }
 
