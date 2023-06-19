@@ -38,6 +38,13 @@ public class PetRequestDTO {
     private LocalDate missDate;
 
     @Builder
+    public PetRequestDTO(String petName, Boolean petSex, Long petOld, Boolean neutered) {
+        this.petName = petName;
+        this.petSex = petSex;
+        this.petOld = petOld;
+        this.neutered = neutered;
+    }
+
     public PetDogs toEntity() {
         return PetDogs.builder()
                 .petName(petName)
