@@ -48,4 +48,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+<<<<<<< HEAD
 }
+=======
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsService() {
+//        UserDetails user = User.withDefaultPasswordEncoder()
+//                .username("test")
+//                .password("test")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
+}
+>>>>>>> a896e11 ([Feat] 1:N, 1:1 채팅)
