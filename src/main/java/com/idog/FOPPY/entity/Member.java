@@ -2,22 +2,22 @@ package com.idog.FOPPY.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity(name="member")
-@NoArgsConstructor
-public class Member implements UserDetails {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uid;
+    @Column(name="id", updatable = false)
+    private Long id;
 
     @Column(unique = true)
     private String username;
@@ -25,31 +25,23 @@ public class Member implements UserDetails {
     @Column
     private String password;
 
-    @Column
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+//    @CreatedDate
+//    @Column(name="created_at")
+//    private LocalDateTime createdAt;
+//
+//    @LastModifiedDate
+//    @Column(name="updated_at")
+//    private LocalDateTime updatedAt;
 
     @Builder
-    public Member(
-            Long uid,
-            String username,
-            String password,
-            LocalDateTime createdAt) {
-        this.uid = uid;
+    public Member(String username, String password) {
         this.username = username;
         this.password = password;
-        this.createdAt = createdAt;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(() -> {
-            return "ROLE_USER";
-        });
-
-        return collectors;
+        return List.of(new SimpleGrantedAuthority("user"));
     }
 
     @Override
