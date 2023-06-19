@@ -24,45 +24,43 @@ public class Member implements UserDetails {
     private String username;
 
     private String password;
+    private List<Long> petIds;
     private String email;
     private String phoneNum;
     private String address;
-    private String profileURL; // 프로필 이미지 경로
-    private List<Long> petIDs; // 등록되어 있는 반려견ID 리스트
+
+    @OneToMany(mappedBy = "member")
+    private List<PetDogs> petDogs;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public Member(
-            Long uid,
-            String username,
-            String password,
-            String email,
-            String phoneNum,
-            String address,
-            String profileURL,
-            List<Long> petIDs,
-            LocalDateTime createdAt) {
+    public Member(Long uid, String username, String password, List<Long> petIds,
+            String email, String phoneNum, String address, LocalDateTime createdAt) {
         this.uid = uid;
         this.username = username;
         this.password = password;
+        this.petIds = petIds;
         this.email = email;
         this.phoneNum = phoneNum;
         this.address = address;
-        this.profileURL = profileURL;
-        this.petIDs = petIDs;
         this.createdAt = createdAt;
     }
 
-    public void updateMember(String username, String password, String email,
-                             String phoneNum, String address, String profileURL){
+    public void addPet(Long petId){
+        if (petIds == null) {
+            petIds = new ArrayList<>();
+        }
+        petIds.add(petId);
+    }
+
+    public void update(String username, String password, String email, String phoneNum, String address) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.phoneNum = phoneNum;
         this.address = address;
-        this.profileURL = profileURL;
     }
 
     @Override

@@ -6,23 +6,17 @@ import lombok.*;
 import java.util.List;
 
 @Data
-@Getter
-public class MemberRequestDTO {
+public class MemberDTO {
 
+//    private Long uid;
     private String username;
     private String password;
-    private String email;
-    private String phoneNum;
-    private String address;
-
 
     public Member toEntity() {
         return Member.builder()
+//                .uid(uid)
                 .username(username)
                 .password(password)
-                .email(email)
-                .phoneNum(phoneNum)
-                .address(address)
                 .build();
     }
 }
