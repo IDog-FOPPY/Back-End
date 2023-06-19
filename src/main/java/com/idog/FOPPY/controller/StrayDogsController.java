@@ -9,6 +9,7 @@ import com.idog.FOPPY.service.StrayDogsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -88,12 +89,12 @@ public class StrayDogsController {
 
     @PostMapping("/StrayDogs/noseIdent")
     public ResponseEntity<String> noseIdent(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("dogUid") String dogUid
+            @RequestParam("file") MultipartFile file
     ) {
         try {
+
             String fileExtension = getFileExtension(file.getOriginalFilename());
-            String fileName = "/dog" + dogUid + "." + fileExtension;
+            String fileName = "/dog" + RandomStringUtils.random(15, true, true) + "." + fileExtension;
             String fileUrl = "https://" + bucket + fileName;
 
             ObjectMetadata metadata = new ObjectMetadata();
