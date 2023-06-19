@@ -37,10 +37,34 @@ public class StrayDogsController {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Operation(summary = "전체 유기견 리스트 조회")
+//    @Operation(summary = "전체 유기견 리스트 조회")
+//    @GetMapping("/StrayDogs")
+//    public List<PetResponseDTO> findAllStray() {
+//        return strayDogsService.findAllStray();
+//    }
+
+    @Operation(summary = "견종, 지역, 날짜 조회")
     @GetMapping("/StrayDogs")
-    public List<PetResponseDTO> findAllStray() {
-        return strayDogsService.findAllStray();
+    public List<PetResponseDTO> findByParameters(@RequestParam(required = false) breedState petBreed,
+                                                 @RequestParam(required = false) String missGu,
+                                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate missDate) {
+        if (petBreed != null && missGu != null && missDate != null) {
+            return strayDogsService.findByDateLocationBreed(missDate, missGu, petBreed);
+        } else if (petBreed != null && missGu != null) {
+            return strayDogsService.findByLocationBreed(missGu, petBreed);
+        } else if (petBreed != null && missDate != null) {
+            return strayDogsService.findByDateBreed(missDate, petBreed);
+        } else if (missGu != null && missDate != null) {
+            return strayDogsService.findByDateLocation(missDate, missGu);
+        } else if (petBreed != null) {
+            return strayDogsService.findByBreed(petBreed);
+        } else if (missGu != null) {
+            return strayDogsService.findByLocation(missGu);
+        } else if (missDate != null) {
+            return strayDogsService.findByDate(missDate);
+        } else {
+            return strayDogsService.findAllStray();
+        }
     }
 
     @Operation(summary = "견종별 조회")
