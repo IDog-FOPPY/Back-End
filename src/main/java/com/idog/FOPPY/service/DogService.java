@@ -1,10 +1,12 @@
 package com.idog.FOPPY.service;
 
+import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
 import com.idog.FOPPY.dto.Dog.MissingInfoRequest;
 import com.idog.FOPPY.dto.Dog.DogInfoRequest;
 import com.idog.FOPPY.repository.DogRepository;
+import com.idog.FOPPY.repository.DogSpecification;
 import com.idog.FOPPY.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,5 +55,10 @@ public class DogService {
         dogRepository.save(dog);
 
         return dog.getId();
+    }
+
+    public List<Dog> getMissingDogs(String missingGu, String missingDong, LocalDate startDate, LocalDate endDate, Breed breed) {
+        return dogRepository.findAll(DogSpecification.missingAndAreaAndDateAndBreed(
+                missingGu, missingDong, startDate, endDate, breed));
     }
 }
