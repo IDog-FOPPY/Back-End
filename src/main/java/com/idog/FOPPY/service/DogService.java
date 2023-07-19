@@ -3,6 +3,7 @@ package com.idog.FOPPY.service;
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
+import com.idog.FOPPY.dto.Dog.MissingDogResponse;
 import com.idog.FOPPY.dto.Dog.MissingInfoRequest;
 import com.idog.FOPPY.dto.Dog.DogInfoRequest;
 import com.idog.FOPPY.repository.DogRepository;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -57,8 +59,13 @@ public class DogService {
         return dog.getId();
     }
 
-    public List<Dog> getMissingDogs(String missingGu, String missingDong, LocalDate startDate, LocalDate endDate, Breed breed) {
-        return dogRepository.findAll(DogSpecification.missingAndAreaAndDateAndBreed(
+    @Transactional
+    public List<MissingDogResponse> getMissingDogs(String missingGu, String missingDong, LocalDate startDate, LocalDate endDate, Breed breed) {
+        List<Dog> dogs = dogRepository.findAll(DogSpecification.missingAndAreaAndDateAndBreed(
                 missingGu, missingDong, startDate, endDate, breed));
+
+        return dogs.stream()
+                .map(MissingDogResponse::of)
+                .collect(Collectors.toList());
     }
 }

@@ -22,8 +22,11 @@ public class DogSpecification {
 
                 predicates.add(cb.equal(root.get("isMissing"), true));
 
-                if (missingGu != null && missingDong != null) {
+                if (missingGu != null) {
                     predicates.add(cb.equal(root.get("missingGu"), missingGu));
+                }
+
+                if (missingDong != null) {
                     predicates.add(cb.equal(root.get("missingDong"), missingDong));
                 }
 
@@ -32,7 +35,7 @@ public class DogSpecification {
                 }
 
                 if (breed != null) {
-                    predicates.add(cb.equal(root.get("breed"), breed));
+                    predicates.add(cb.equal(root.get("breed").as(String.class), breed.name()));
                 }
 
                 return cb.and(predicates.toArray(new Predicate[0]));

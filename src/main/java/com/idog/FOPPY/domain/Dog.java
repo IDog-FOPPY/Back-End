@@ -29,6 +29,7 @@ public class Dog {
     private PetSex sex;
     @Column(name = "breed", nullable = false)
     @Enumerated(EnumType.STRING)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Breed breed; // 견종
     private String note; // 메모
     private String disease;  // 질병
@@ -43,7 +44,7 @@ public class Dog {
     private String missingDong; // 실종 장소 (동)
     private String missingDetailedLocation; // 실종 장소 (상세 주소)
     private LocalDate missDate; // 실종 날짜
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @Column(nullable = true) @Embedded
     private MissingTime missTime; //실종 시간
     private String etc; // 실종 시 특이 사항
 

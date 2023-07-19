@@ -1,5 +1,6 @@
 package com.idog.FOPPY.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MissingTime {
+    @Column(nullable = true)
     private int hour;
+    @Column(nullable = true)
     private int minute;
 }
