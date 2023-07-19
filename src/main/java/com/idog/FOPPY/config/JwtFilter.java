@@ -1,6 +1,6 @@
 package com.idog.FOPPY.config;
 
-import com.idog.FOPPY.service.MemberService;
+import com.idog.FOPPY.service.UserService;
 import com.idog.FOPPY.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,8 +21,14 @@ import java.util.List;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final MemberService memberService;
+    private final UserService userService;
     private final String secretKey;
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/user/signup") || path.startsWith("/api/user/login")
+                || path.startsWith("/v3/") || path.startsWith("/swagger-ui/");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
