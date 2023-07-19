@@ -1,33 +1,27 @@
-package com.idog.FOPPY.repository;
-
-import com.idog.FOPPY.entity.PetDogs;
-import com.idog.FOPPY.entity.breedState;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-public interface PetDogsRepository extends JpaRepository<PetDogs, Long> {
-
-    List<PetDogs> findByMissedIsTrue();
-
-    List<PetDogs> findByPetBreed(breedState petBreed);
-
-    List<PetDogs> findByMissGu(String missGu);
-
-    List<PetDogs> findByMissDate(LocalDate date);
-
-    List<PetDogs> findByMissDateAndMissGu(LocalDate date, String missGu);
-
-    List<PetDogs> findByMissDateAndPetBreed(LocalDate date, breedState petBreed);
-
-    List<PetDogs> findByMissGuAndPetBreed(String missGu, breedState petBreed);
-
-    List<PetDogs> findByMissDateAndMissGuAndPetBreed(LocalDate date, String missGu, breedState petBreed);
-
-    List<PetDogs> findByMember_Uid(Long uid);
-}
+//package com.idog.FOPPY.repository;
+//
+//import com.idog.FOPPY.domain.Dog;
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.stereotype.Repository;
+//
+//@Repository
+//public interface PetDogsRepository extends JpaRepository<Dog, Long> {
+//
+////    List<Dog> findByMissedIsTrue();
+////
+////    List<Dog> findByPetBreed(breedState petBreed);
+////
+////    List<Dog> findByMissGu(String missGu);
+////
+////    List<Dog> findByMissDate(LocalDate date);
+////
+////    List<Dog> findByMissDateAndMissGu(LocalDate date, String missGu);
+////
+////    List<Dog> findByMissDateAndPetBreed(LocalDate date, breedState petBreed);
+////
+////    List<Dog> findByMissGuAndPetBreed(String missGu, breedState petBreed);
+////
+////    List<Dog> findByMissDateAndMissGuAndPetBreed(LocalDate date, String missGu, breedState petBreed);
+////
+////    List<Dog> findByMember_Uid(Long uid);
+//}

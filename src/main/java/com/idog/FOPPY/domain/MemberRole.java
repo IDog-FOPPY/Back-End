@@ -1,4 +1,4 @@
-package com.idog.FOPPY.entity;
+package com.idog.FOPPY.domain;
 
 public enum MemberRole {
     USER, ADMIN

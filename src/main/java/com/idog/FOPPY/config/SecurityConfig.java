@@ -1,12 +1,11 @@
 package com.idog.FOPPY.config;
 
-import com.idog.FOPPY.service.MemberService;
+import com.idog.FOPPY.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final MemberService memberService;
+    private final UserService userService;
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
@@ -39,12 +38,12 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
-                        .requestMatchers("/api/v1/**").permitAll()
-                        .anyRequest().permitAll() // FIXME
+                                .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
+                                .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                 )
-                .addFilterBefore(new JwtFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class)
-                ;
+                .addFilterBefore(new JwtFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+        ;
 
         return http.build();
     }
