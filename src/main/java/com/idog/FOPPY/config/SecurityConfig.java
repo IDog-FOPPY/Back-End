@@ -41,25 +41,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/ws/**").authenticated()
+                        .requestMatchers("/ws/**").permitAll()  // FIXME
                 )
                 .addFilterBefore(new JwtFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();
     }
-
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsService() {
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("test")
-//                .password("test")
-//                .roles("USER")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
-}
 
 //    @Bean
 //    public InMemoryUserDetailsManager userDetailsService() {
