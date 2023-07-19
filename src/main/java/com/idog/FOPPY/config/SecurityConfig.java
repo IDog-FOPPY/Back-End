@@ -38,9 +38,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
-                                .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
+                        .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/ws/**").permitAll()  // FIXME
                 )
                 .addFilterBefore(new JwtFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
         ;
@@ -48,4 +49,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsService() {
+//        UserDetails user = User.withDefaultPasswordEncoder()
+//                .username("test")
+//                .password("test")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 }
