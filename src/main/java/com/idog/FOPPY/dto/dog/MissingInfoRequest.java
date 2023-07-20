@@ -1,4 +1,4 @@
-package com.idog.FOPPY.dto.Dog;
+package com.idog.FOPPY.dto.dog;
 
 import com.idog.FOPPY.domain.MissingTime;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor

@@ -1,7 +1,7 @@
 package com.idog.FOPPY.service;
 
 import com.idog.FOPPY.domain.User;
-import com.idog.FOPPY.dto.User.*;
+import com.idog.FOPPY.dto.user.*;
 import com.idog.FOPPY.repository.UserRepository;
 import com.idog.FOPPY.utils.JwtUtil;
 import jakarta.mail.MessagingException;

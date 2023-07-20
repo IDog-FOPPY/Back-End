@@ -1,14 +1,13 @@
 package com.idog.FOPPY.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.idog.FOPPY.dto.Dog.MissingInfoRequest;
+import com.idog.FOPPY.dto.dog.MissingInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 

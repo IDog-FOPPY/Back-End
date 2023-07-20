@@ -1,10 +1,9 @@
 package com.idog.FOPPY.controller;
 
 import com.idog.FOPPY.domain.Breed;
-import com.idog.FOPPY.domain.Dog;
-import com.idog.FOPPY.dto.Dog.DogInfoRequest;
-import com.idog.FOPPY.dto.Dog.MissingDogResponse;
-import com.idog.FOPPY.dto.Dog.MissingInfoRequest;
+import com.idog.FOPPY.dto.dog.DogInfoRequest;
+import com.idog.FOPPY.dto.dog.MissingDogResponse;
+import com.idog.FOPPY.dto.dog.MissingInfoRequest;
 import com.idog.FOPPY.dto.ResponseDTO;
 import com.idog.FOPPY.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +41,7 @@ public class DogController {
                 .body(response);
     }
 
-    @PatchMapping("/miss/{dogId}")
+    @PatchMapping("/missing/{dogId}")
     @Operation(summary = "반려견 실종 처리")
     public ResponseEntity<ResponseDTO<Long>> setMissing(@PathVariable Long dogId,
                                                         @RequestBody MissingInfoRequest request) {

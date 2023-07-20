@@ -1,4 +1,4 @@
-package com.idog.FOPPY.dto.Dog;
+package com.idog.FOPPY.dto.dog;
 
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.PetSex;

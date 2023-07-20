@@ -1,7 +1,7 @@
 package com.idog.FOPPY.controller;
 
 import com.idog.FOPPY.dto.ResponseDTO;
-import com.idog.FOPPY.dto.User.*;
+import com.idog.FOPPY.dto.user.*;
 import com.idog.FOPPY.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

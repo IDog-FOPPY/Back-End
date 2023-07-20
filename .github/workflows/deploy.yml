@@ -9,7 +9,7 @@ env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: foppy-github-actions-s3-bucket
   CODE_DEPLOY_APPLICATION_NAME: foppy-codedeploy-app
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: foppy-codedeploy-app-group
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: foppy-codedeploy-deployment-group
 
 permissions:
   contents: read
