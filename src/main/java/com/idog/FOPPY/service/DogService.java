@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-
 public class DogService {
 
     private final UserRepository userRepository;

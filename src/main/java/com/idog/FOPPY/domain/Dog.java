@@ -43,7 +43,8 @@ public class Dog {
     private String missingDong; // 실종 장소 (동)
     private String missingDetailedLocation; // 실종 장소 (상세 주소)
     private LocalDate missDate; // 실종 날짜
-    @Column(nullable = true) @Embedded
+    @Embedded
+    @Column(nullable = true)
     private MissingTime missTime; //실종 시간
     private String etc; // 실종 시 특이 사항
 
