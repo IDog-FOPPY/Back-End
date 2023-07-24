@@ -39,7 +39,7 @@ jobs:
       - name: Set yml file
         uses: actions/checkout@v2
       - run: |
-          mkdir ./src/main/resources # resources 폴더 생성
+#          mkdir ./src/main/resources # resources 폴더 생성
           touch ./src/main/resources/application.yml
       - run: echo "${{secrets.APPLICATION}}" > ./src/main/resources/application.yml
 
