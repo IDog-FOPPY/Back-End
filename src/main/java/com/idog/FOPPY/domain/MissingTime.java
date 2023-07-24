@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MissingTime {
     @Column(nullable = true)
-    private int hour;
+    private String hour;
     @Column(nullable = true)
-    private int minute;
+    private String minute;
 }

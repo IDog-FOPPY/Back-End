@@ -3,9 +3,9 @@ package com.idog.FOPPY.service;
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
-import com.idog.FOPPY.dto.Dog.MissingDogResponse;
-import com.idog.FOPPY.dto.Dog.MissingInfoRequest;
-import com.idog.FOPPY.dto.Dog.DogInfoRequest;
+import com.idog.FOPPY.dto.dog.MissingDogResponse;
+import com.idog.FOPPY.dto.dog.MissingInfoRequest;
+import com.idog.FOPPY.dto.dog.DogInfoRequest;
 import com.idog.FOPPY.repository.DogRepository;
 import com.idog.FOPPY.repository.DogSpecification;
 import com.idog.FOPPY.repository.UserRepository;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-
 public class DogService {
 
     private final UserRepository userRepository;

@@ -59,7 +59,7 @@ public class S3Service  {
             objectMetadata.setContentType(file.getContentType());
 
             try(InputStream inputStream = file.getInputStream()) {
-                s3Client.putObject(new PutObjectRequest(bucket+"/og", fileName, inputStream, objectMetadata)
+                s3Client.putObject(new PutObjectRequest(bucket+"/dog", fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
                 imgUrlList.add(s3Client.getUrl(bucket+"/dog", fileName).toString());
             } catch(IOException e) {

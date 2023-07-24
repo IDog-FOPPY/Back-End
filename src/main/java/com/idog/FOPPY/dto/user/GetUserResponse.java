@@ -1,16 +1,14 @@
-package com.idog.FOPPY.dto.User;
+package com.idog.FOPPY.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddUserRequest {
+public class GetUserResponse {
+
     private String email;
     private String nickName;
-    private String password;
-    private String phone;
 }

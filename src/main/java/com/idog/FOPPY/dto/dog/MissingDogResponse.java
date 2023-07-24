@@ -1,17 +1,14 @@
-package com.idog.FOPPY.dto.Dog;
+package com.idog.FOPPY.dto.dog;
 
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.MissingTime;
 import com.idog.FOPPY.domain.PetSex;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -24,7 +21,6 @@ public class MissingDogResponse {
     private Breed breed;
     private String note;
     private String disease;
-//    private List<String> imgUrlList;
     private String imgUrl;
 
     private String missingCity;
@@ -44,7 +40,6 @@ public class MissingDogResponse {
                 dog.getBreed(),
                 dog.getNote(),
                 dog.getDisease(),
-//                dog.getImgUrlList(),
                 dog.getImgUrlList().get(0),
                 dog.getMissingCity(),
                 dog.getMissingGu(),
