@@ -3,6 +3,7 @@ package com.idog.FOPPY.service;
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
+import com.idog.FOPPY.dto.dog.DogResponse;
 import com.idog.FOPPY.dto.dog.MissingDogResponse;
 import com.idog.FOPPY.dto.dog.MissingInfoRequest;
 import com.idog.FOPPY.dto.dog.DogInfoRequest;
@@ -66,5 +67,24 @@ public class DogService {
         return dogs.stream()
                 .map(MissingDogResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<DogResponse> getMyDogs() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = (String)authentication.getPrincipal();
+
+        User user = userRepository.findByEmail(userEmail)  // Assuming you have a findByUsername method
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userEmail));
+
+        List<Dog> dogs = dogRepository.findByUser(user);
+
+        List<DogResponse> dogResponses = dogs.stream()
+                .map(DogResponse::new)
+                .collect(Collectors.toList());
+
+        System.out.println(dogResponses.size());
+
+        return dogResponses;
     }
 }

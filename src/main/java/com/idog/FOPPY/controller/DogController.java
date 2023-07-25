@@ -2,6 +2,7 @@ package com.idog.FOPPY.controller;
 
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.dto.dog.DogInfoRequest;
+import com.idog.FOPPY.dto.dog.DogResponse;
 import com.idog.FOPPY.dto.dog.MissingDogResponse;
 import com.idog.FOPPY.dto.dog.MissingInfoRequest;
 import com.idog.FOPPY.dto.ResponseDTO;
@@ -71,6 +72,20 @@ public class DogController {
         response.setStatus(true);
         response.setMessage("Missing dogs fetched successfully.");
         response.setData(missingDogs);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @GetMapping("")
+    @Operation(summary = "내 강아지 조회")
+    public ResponseEntity<ResponseDTO<List<DogResponse>>> getMissingDogs() {
+        List<DogResponse> myDogs = dogService.getMyDogs();
+        System.out.println(myDogs.size());
+        ResponseDTO<List<DogResponse>> response = new ResponseDTO<>();
+        response.setStatus(true);
+        response.setMessage("get my dogs successfully.");
+        response.setData(myDogs);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);

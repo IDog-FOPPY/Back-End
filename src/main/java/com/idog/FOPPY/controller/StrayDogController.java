@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 
-@PreAuthorize("permitAll()")
 @Tag(name = "strayDog", description = "유기견 API")
 @RequestMapping("/api/stray")
 @RequiredArgsConstructor
