@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/signup", "/api/user/login", "api/stray", "api/stray?**").permitAll()
+                        .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/ws/**").permitAll()  // FIXME
