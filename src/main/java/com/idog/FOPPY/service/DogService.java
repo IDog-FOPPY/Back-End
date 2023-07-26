@@ -36,7 +36,7 @@ public class DogService {
     private final S3Service s3Service;
 
     @Transactional
-    public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
+public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = (String) authentication.getPrincipal();
 
@@ -82,7 +82,7 @@ public class DogService {
             }
         }
         Dog dog = user.addDog(dogInfoRequest.getName(), dogInfoRequest.getBirth(), dogInfoRequest.getSex(), dogInfoRequest.getBreed(),
-                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), dogInfoRequest.getNeutered(), imgUrlList, noseImgUrlList);
+                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), dogInfoRequest.getNeutered(), dogInfoRequest.getIsMissing(), imgUrlList, noseImgUrlList);
 
         dogRepository.save(dog);
 
@@ -108,6 +108,15 @@ public class DogService {
         return dogs.stream()
                 .map(MissingDogResponse::of)
                 .collect(Collectors.toList());
+    }
+    @Transactional
+    public Long update(Long dogId, DogInfoRequest request) {
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(() -> new UsernameNotFoundException("Dog not found with id: " + dogId));
+        dog.update(request);
+        dogRepository.save(dog);
+
+        return dog.getId();
     }
 
     @Transactional

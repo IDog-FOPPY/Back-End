@@ -1,6 +1,7 @@
 package com.idog.FOPPY.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.idog.FOPPY.dto.dog.DogInfoRequest;
 import com.idog.FOPPY.dto.dog.MissingInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -60,7 +61,7 @@ public class Dog {
     private User user;
 
     //== 생성 메서드 ==//
-    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered, List<String> imgUrlList, List<String> noseImgUrlList){
+    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered, Boolean isMissing, List<String> imgUrlList, List<String> noseImgUrlList){
         Dog dog = new Dog();
         dog.setName(name);
         dog.setBirth(birth);
@@ -69,10 +70,22 @@ public class Dog {
         dog.setNote(note);
         dog.setDisease(disease);
         dog.setNeutered(neutered);
-        dog.setIsMissing(false);
+        dog.setIsMissing(isMissing);
         dog.setImgUrlList(imgUrlList);
         dog.setNoseImgUrlList(noseImgUrlList);
         return dog;
+    }
+
+    public void update(DogInfoRequest request) {
+
+        this.name = request.getName();
+        this.birth = request.getBirth();
+        this.sex = request.getSex();
+        this.breed = request.getBreed();
+        this.note = request.getNote();
+        this.disease = request.getDisease();
+        this.neutered = request.getNeutered();
+        this.isMissing = request.getIsMissing();
     }
 
     private void setNeutered(Boolean neutered) {
