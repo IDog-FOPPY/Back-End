@@ -58,6 +58,20 @@ public class DogController {
                 .body(response);
     }
 
+    @PatchMapping("/{dogId}")
+    @Operation(summary = "강아지 정보 수정")
+    public ResponseEntity<ResponseDTO<Long>> update(@PathVariable Long dogId, @RequestBody DogInfoRequest request) {
+        Long setDogId = dogService.update(dogId, request);
+
+        ResponseDTO<Long> response = new ResponseDTO<>();
+        response.setStatus(true);
+        response.setMessage("Dog info change successful.");
+        response.setData(setDogId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
+    }
+
     @GetMapping("/missing")
     @Operation(summary = "조건에 따른 실종된 강아지 조회")
     public ResponseEntity<ResponseDTO<List<MissingDogResponse>>> getMissingDogs(

@@ -19,4 +19,6 @@ public class DogInfoRequest {
     private String note; // 메모
     private String disease;  // 질병
     private Boolean neutered;
+
+    private Boolean isMissing;
 }
