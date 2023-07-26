@@ -57,7 +57,7 @@ public class Dog {
     private User user;
 
     //== 생성 메서드 ==//
-    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, List<String> imgUrlList){
+    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, List<String> imgUrlList, List<String> noseImgUrlList){
         Dog dog = new Dog();
         dog.setName(name);
         dog.setBirth(birth);
@@ -67,6 +67,7 @@ public class Dog {
         dog.setDisease(disease);
         dog.setIsMissing(false);
         dog.setImgUrlList(imgUrlList);
+        dog.setNoseImgUrlList(noseImgUrlList);
         return dog;
     }
 

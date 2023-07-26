@@ -1,5 +1,7 @@
 package com.idog.FOPPY.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
@@ -12,13 +14,20 @@ import com.idog.FOPPY.repository.DogSpecification;
 import com.idog.FOPPY.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import okhttp3.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,9 +40,9 @@ public class DogService {
     private final S3Service s3Service;
 
     @Transactional
-    public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFile) {
+    public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = (String)authentication.getPrincipal();
+        String userEmail = (String) authentication.getPrincipal();
 
         if (multipartFile.size() > 10) {
             throw new IllegalArgumentException("최대 10장까지 가능합니다.");
@@ -44,15 +53,47 @@ public class DogService {
 
         List<String> imgUrlList = s3Service.upload(multipartFile, "/dog");
 
+        // Create OkHttpClient
+        OkHttpClient client = new OkHttpClient();
+
+// Create multipart body builder
+        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+
+// Add files to the multipart request
+        for (MultipartFile file : multipartFile) {
+            multipartBodyBuilder.addFormDataPart("files", file.getOriginalFilename(),
+                    RequestBody.create(file.getBytes(), MediaType.parse(file.getContentType())));
+        }
+
+// Build the Request
+        Request request = new Request.Builder()
+                .url("http://localhost:8000/noseDetect") // Replace with your FastAPI URL
+                .post(multipartBodyBuilder.build())
+                .build();
+
+        // Send the POST request and get the response
+        Response response = client.newCall(request).execute();
+
+        // Parse the response JSON to get the list of URLs
+        JsonNode responseJson = new ObjectMapper().readTree(response.body().string());
+        List<String> noseImgUrlList = new ArrayList<>();
+        if (responseJson.has("result")) {
+            for (JsonNode urlList : responseJson.get("result")) {
+                for (JsonNode urlNode : urlList) {
+                    noseImgUrlList.add(urlNode.asText());
+                }
+            }
+        }
         Dog dog = user.addDog(dogInfoRequest.getName(), dogInfoRequest.getBirth(), dogInfoRequest.getSex(), dogInfoRequest.getBreed(),
-                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), imgUrlList);
+                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), imgUrlList, noseImgUrlList);
 
         dogRepository.save(dog);
 
         return dog.getId();
-    }
 
-    public Long setMissing(Long id, MissingInfoRequest missingInfo) {
+    }
+        public Long setMissing(Long id, MissingInfoRequest missingInfo) {
         Dog dog = dogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid dog ID"));
 
@@ -86,8 +127,6 @@ public class DogService {
         List<DogResponse> dogResponses = dogs.stream()
                 .map(DogResponse::new)
                 .collect(Collectors.toList());
-
-        System.out.println(dogResponses.size());
 
         return dogResponses;
     }

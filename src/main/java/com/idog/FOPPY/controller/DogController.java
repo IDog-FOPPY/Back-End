@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class DogController {
     @PostMapping("/create")
     @Operation(summary = "반려견 등록")
     public ResponseEntity<ResponseDTO<Long>> register(@RequestPart DogInfoRequest request,
-                                                      @RequestPart("file") List<MultipartFile> multipartFile) {
+                                                      @RequestPart("file") List<MultipartFile> multipartFile) throws IOException, InterruptedException {
         Long savedId = dogService.save(request, multipartFile);
 
         ResponseDTO<Long> response = new ResponseDTO<>();
@@ -81,7 +82,6 @@ public class DogController {
     @Operation(summary = "내 강아지 조회")
     public ResponseEntity<ResponseDTO<List<DogResponse>>> getMissingDogs() {
         List<DogResponse> myDogs = dogService.getMyDogs();
-        System.out.println(myDogs.size());
         ResponseDTO<List<DogResponse>> response = new ResponseDTO<>();
         response.setStatus(true);
         response.setMessage("get my dogs successfully.");
