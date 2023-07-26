@@ -36,6 +36,9 @@ public class Dog {
     @ElementCollection
     private List<String> imgUrlList = new ArrayList<>(); // Dog image URLs
 
+    @ElementCollection
+    private List<String> noseImgUrlList = new ArrayList<>(); // Dog image URLs
+
     @Column(name = "is_missing", nullable = false)
     private Boolean isMissing; // 실종 유무(true=실종 / false=집에 있음)
     private String missingCity; // 실종 장소 (시)
@@ -86,6 +89,8 @@ public class Dog {
     private void setDisease(String disease) { this.disease = disease; }
     private void setIsMissing(Boolean isMissing) { this.isMissing = isMissing; }
     private void setImgUrlList(List<String> imgUrlList) { this.imgUrlList = imgUrlList; }
+
+    public void setNoseImgUrlList(List<String> noseImgUrlList) { this.noseImgUrlList = noseImgUrlList; }
 
     public void setUser(User user) {
         this.user = user;

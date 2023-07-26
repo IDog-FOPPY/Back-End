@@ -48,7 +48,7 @@ public class S3Service  {
         }
     }
 
-    public List<String> upload(List<MultipartFile> multipartFile) {
+    public List<String> upload(List<MultipartFile> multipartFile, String path) {
         List<String> imgUrlList = new ArrayList<>();
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
@@ -59,9 +59,9 @@ public class S3Service  {
             objectMetadata.setContentType(file.getContentType());
 
             try(InputStream inputStream = file.getInputStream()) {
-                s3Client.putObject(new PutObjectRequest(bucket+"/dog", fileName, inputStream, objectMetadata)
+                s3Client.putObject(new PutObjectRequest(bucket+path, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgUrlList.add(s3Client.getUrl(bucket+"/dog", fileName).toString());
+                imgUrlList.add(s3Client.getUrl(bucket+path, fileName).toString());
             } catch(IOException e) {
                 throw new IllegalArgumentException("파일 업로드 오류");
             }
