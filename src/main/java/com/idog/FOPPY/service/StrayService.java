@@ -31,7 +31,7 @@ public class StrayService {
 
     @Transactional
     public Long save(StrayInfoRequest request, List<MultipartFile> multipartFile) {
-        List<String> imgUrlList = s3Service.upload(multipartFile);
+        List<String> imgUrlList = s3Service.upload(multipartFile, "/dog");
 
         StrayDog strayDog = StrayDog.builder()
                 .missingCity(request.getMissingCity())

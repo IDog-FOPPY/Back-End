@@ -35,10 +35,14 @@ public class DogService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = (String)authentication.getPrincipal();
 
+        if (multipartFile.size() > 10) {
+            throw new IllegalArgumentException("최대 10장까지 가능합니다.");
+        }
+
         User user = userRepository.findByEmail(userEmail)  // Assuming you have a findByUsername method
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userEmail));
 
-        List<String> imgUrlList = s3Service.upload(multipartFile);
+        List<String> imgUrlList = s3Service.upload(multipartFile, "/dog");
 
         Dog dog = user.addDog(dogInfoRequest.getName(), dogInfoRequest.getBirth(), dogInfoRequest.getSex(), dogInfoRequest.getBreed(),
                 dogInfoRequest.getNote(), dogInfoRequest.getDisease(), imgUrlList);
