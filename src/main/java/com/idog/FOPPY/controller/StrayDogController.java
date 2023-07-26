@@ -4,6 +4,7 @@ import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.dto.ResponseDTO;
 import com.idog.FOPPY.dto.dog.DogInfoRequest;
 import com.idog.FOPPY.dto.dog.MissingDogResponse;
+import com.idog.FOPPY.dto.straydog.FindStrayResponse;
 import com.idog.FOPPY.dto.straydog.StrayDogResponse;
 import com.idog.FOPPY.dto.straydog.StrayInfoRequest;
 import com.idog.FOPPY.service.DogService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class StrayDogController {
 
     private final StrayService strayService;
 
-    @PostMapping("")
+    @PostMapping("/save")
     @Operation(summary = "유기견 등록")
     public ResponseEntity<ResponseDTO<Long>> register(@RequestPart StrayInfoRequest request,
                                                       @RequestPart("file") List<MultipartFile> multipartFile) {
@@ -40,6 +42,20 @@ public class StrayDogController {
         response.setStatus(true);
         response.setMessage("Stray dog save successful.");
         response.setData(savedId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @PostMapping("")
+    @Operation(summary = "유기견 일치 비문 검색")
+    public ResponseEntity<ResponseDTO<List<FindStrayResponse>>> register(@RequestPart("file") MultipartFile multipartFile) throws IOException {
+        List<FindStrayResponse> stray = strayService.findStray(multipartFile);
+
+        ResponseDTO<List<FindStrayResponse>> response = new ResponseDTO<>();
+        response.setStatus(true);
+        response.setMessage("Stray dog find successful.");
+        response.setData(stray);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
