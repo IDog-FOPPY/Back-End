@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class Dog {
     private Breed breed; // 견종
     private String note; // 메모
     private String disease;  // 질병
+    private Boolean neutered;
 
     @ElementCollection
     private List<String> imgUrlList = new ArrayList<>(); // Dog image URLs
@@ -46,9 +48,10 @@ public class Dog {
     private String missingDong; // 실종 장소 (동)
     private String missingDetailedLocation; // 실종 장소 (상세 주소)
     private LocalDate missDate; // 실종 날짜
-    @Embedded
+
     @Column(nullable = true)
-    private MissingTime missTime; //실종 시간
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime missTime;
     private String etc; // 실종 시 특이 사항
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,7 +60,7 @@ public class Dog {
     private User user;
 
     //== 생성 메서드 ==//
-    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, List<String> imgUrlList, List<String> noseImgUrlList){
+    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered, List<String> imgUrlList, List<String> noseImgUrlList){
         Dog dog = new Dog();
         dog.setName(name);
         dog.setBirth(birth);
@@ -65,10 +68,15 @@ public class Dog {
         dog.setBreed(breed);
         dog.setNote(note);
         dog.setDisease(disease);
+        dog.setNeutered(neutered);
         dog.setIsMissing(false);
         dog.setImgUrlList(imgUrlList);
         dog.setNoseImgUrlList(noseImgUrlList);
         return dog;
+    }
+
+    private void setNeutered(Boolean neutered) {
+        this.neutered = neutered;
     }
 
     public void markAsMissing(MissingInfoRequest missingInfo) {

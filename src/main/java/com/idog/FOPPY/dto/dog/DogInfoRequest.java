@@ -18,4 +18,5 @@ public class DogInfoRequest {
     private Breed breed; // 견종
     private String note; // 메모
     private String disease;  // 질병
+    private Boolean neutered;
 }
