@@ -2,7 +2,6 @@ package com.idog.FOPPY.service;
 
 import com.idog.FOPPY.config.jwt.JwtProvider;
 import com.idog.FOPPY.domain.User;
-import com.idog.FOPPY.dto.User.*;
 import com.idog.FOPPY.exception.AppException;
 import com.idog.FOPPY.exception.ErrorCode;
 import com.idog.FOPPY.dto.user.*;
