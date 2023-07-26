@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class MissingDogResponse {
     private String missingDong;
     private String missingDetailedLocation;
     private LocalDate missDate;
-    private MissingTime missTime;
+    private LocalTime missTime;
     private String etc;
 
     public static MissingDogResponse of(Dog dog) {

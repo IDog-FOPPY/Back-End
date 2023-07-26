@@ -22,10 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +82,7 @@ public class DogService {
             }
         }
         Dog dog = user.addDog(dogInfoRequest.getName(), dogInfoRequest.getBirth(), dogInfoRequest.getSex(), dogInfoRequest.getBreed(),
-                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), imgUrlList, noseImgUrlList);
+                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), dogInfoRequest.getNeutered(), imgUrlList, noseImgUrlList);
 
         dogRepository.save(dog);
 
