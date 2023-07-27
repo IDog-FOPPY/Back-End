@@ -77,40 +77,22 @@ public class Dog {
     }
 
     public void update(DogInfoRequest request) {
-        if (request.getName() != null) {
-            this.name = request.getName();
-        }
-        if (request.getBirth() != null) {
-            this.birth = request.getBirth();
-        }
-        if (request.getSex() != null) {
-            this.sex = request.getSex();
-        }
-        if (request.getBreed() != null) {
-            this.breed = request.getBreed();
-        }
-        if (request.getNote() != null) {
-            this.note = request.getNote();
-        }
-        if (request.getDisease() != null) {
-            this.disease = request.getDisease();
-        }
-        if (request.getNeutered() != null) {
-            this.neutered = request.getNeutered();
-        }
-        if (request.getIsMissing() != null) {
-            this.isMissing = true;
-            DogInfoRequest.MissingInfo missingInfo = request.getIsMissing();
-            this.missingCity = missingInfo.getMissingCity();
-            this.missingGu = missingInfo.getMissingGu();
-            this.missingDong = missingInfo.getMissingDong();
-            this.missingDetailedLocation = missingInfo.getMissingDetailedLocation();
-            this.missDate = missingInfo.getMissDate();
-            this.missTime = missingInfo.getMissTime();
-            this.etc = missingInfo.getEtc();
-        } else {
-            this.isMissing = false;
-        }
+        this.name = request.getName();
+        this.birth = request.getBirth();
+        this.sex = request.getSex();
+        this.breed = request.getBreed();
+        this.note = request.getNote();
+        this.disease = request.getDisease();
+        this.neutered = request.getNeutered();
+        this.isMissing = request.getIsMissing();
+        this.missingCity = request.getMissingCity();
+        this.missingGu = request.getMissingGu();
+        this.missingDong = request.getMissingDong();
+        this.missingDetailedLocation = request.getMissingDetailedLocation();
+        this.missDate = request.getMissDate();
+        this.missTime = request.getMissTime();
+        this.etc = request.getEtc();
+
     }
 
 
