@@ -85,7 +85,7 @@ public class UserController {
 
     }
 
-    @DeleteMapping ("/delete/{id}")
+    @DeleteMapping ("/{id}")
     @Operation(summary = "유저 회원탈퇴")
     public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Long id) {
         userService.delete(id);

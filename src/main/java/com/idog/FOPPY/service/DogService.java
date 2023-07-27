@@ -122,4 +122,8 @@ public Long save(DogCreateRequest dogCreateRequest, List<MultipartFile> multipar
 
         return dogResponses;
     }
+
+    public void delete(Long dogId) {
+        dogRepository.deleteById(dogId);
+    }
 }

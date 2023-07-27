@@ -87,4 +87,16 @@ public class DogController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }
+
+    @DeleteMapping ("/{id}")
+    @Operation(summary = "강아지 삭제")
+    public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Long id) {
+        dogService.delete(id);
+        ResponseDTO<Void> response = new ResponseDTO<>();
+        response.setStatus(true);
+        response.setMessage("Dog deletion successful.");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
 }
