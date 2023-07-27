@@ -22,6 +22,7 @@ public class MissingDogResponse {
     private Breed breed;
     private String note;
     private String disease;
+    private Boolean neutered;
     private String imgUrl;
 
     private String missingCity;
@@ -41,6 +42,7 @@ public class MissingDogResponse {
                 dog.getBreed(),
                 dog.getNote(),
                 dog.getDisease(),
+                dog.getNeutered(),
                 dog.getImgUrlList().get(0),
                 dog.getMissingCity(),
                 dog.getMissingGu(),

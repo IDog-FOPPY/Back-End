@@ -107,6 +107,13 @@ public Long save(DogCreateRequest dogCreateRequest, List<MultipartFile> multipar
     }
 
     @Transactional
+    public DogInfoResponse getDetail(Long dogId) {
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(() -> new UsernameNotFoundException("Dog not found with id: " + dogId));
+        return new DogInfoResponse(dog);
+    }
+
+    @Transactional
     public List<DogResponse> getMyDogs() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = (String)authentication.getPrincipal();

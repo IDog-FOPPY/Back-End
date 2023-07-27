@@ -22,6 +22,7 @@ public class DogResponse {
     private PetSex sex;
     private String disease;
     private Breed breed;
+    private Boolean neutered;
 
     private String imgUrl;
 
@@ -33,6 +34,7 @@ public class DogResponse {
         this.breed = dog.getBreed();
         this.note = dog.getNote();
         this.disease = dog.getDisease();
+        this.neutered = dog.getNeutered();
         this.isMissing = dog.getIsMissing();
         this.imgUrl = dog.getImgUrlList().get(0);
     }
