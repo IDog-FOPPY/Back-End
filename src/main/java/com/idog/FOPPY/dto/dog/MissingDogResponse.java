@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @AllArgsConstructor
@@ -17,7 +18,7 @@ import java.time.LocalTime;
 public class MissingDogResponse {
     private Long id;
     private String name;
-    private LocalDate birth;
+    private String birth;
     private PetSex sex;
     private Breed breed;
     private String note;
@@ -29,15 +30,19 @@ public class MissingDogResponse {
     private String missingGu;
     private String missingDong;
     private String missingDetailedLocation;
-    private LocalDate missDate;
-    private LocalTime missTime;
+    private String missDate;
+    private String missTime;
     private String etc;
 
     public static MissingDogResponse of(Dog dog) {
+        String birthStr = dog.getBirth() != null ? dog.getBirth().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        String missDateStr = dog.getMissDate() != null ? dog.getMissDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        String missTimeStr = dog.getMissTime() != null ? dog.getMissTime().format(DateTimeFormatter.ofPattern("HH:mm")) : null;
+
         return new MissingDogResponse(
                 dog.getId(),
                 dog.getName(),
-                dog.getBirth(),
+                birthStr,
                 dog.getSex(),
                 dog.getBreed(),
                 dog.getNote(),
@@ -48,8 +53,8 @@ public class MissingDogResponse {
                 dog.getMissingGu(),
                 dog.getMissingDong(),
                 dog.getMissingDetailedLocation(),
-                dog.getMissDate(),
-                dog.getMissTime(),
+                missDateStr,
+                missTimeStr,
                 dog.getEtc()
         );
     }

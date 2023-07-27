@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class DogInfoResponse {
 
     private String name; // 개 이름
-    private LocalDate birth; // 생일
+    private String birth; // 생일
     private PetSex sex;
     private Breed breed; // 견종
     private String note; // 메모
@@ -34,13 +35,14 @@ public class DogInfoResponse {
     private String missingGu; // 실종 장소 (구)
     private String missingDong; // 실종 장소 (동)
     private String missingDetailedLocation; // 실종 장소 (상세 주소)
-    private LocalDate missDate; // 실종 날짜
-    private LocalTime missTime;
+    private String missDate; // 실종 날짜
+    private String missTime;
     private String etc; // 실종 시 특이 사항
 
     public DogInfoResponse(Dog dog) {
         this.name = dog.getName();
-        this.birth = dog.getBirth();
+        this.birth = dog.getBirth() != null ? dog.getBirth().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+
         this.sex = dog.getSex();
         this.breed = dog.getBreed();
         this.note = dog.getNote();
@@ -53,8 +55,8 @@ public class DogInfoResponse {
         this.missingGu = dog.getMissingGu();
         this.missingDong = dog.getMissingDong();
         this.missingDetailedLocation = dog.getMissingDetailedLocation();
-        this.missDate = dog.getMissDate();
-        this.missTime = dog.getMissTime();
+        this.missDate = dog.getMissDate() != null ? dog.getMissDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        this.missTime = dog.getMissTime() != null ? dog.getMissTime().format(DateTimeFormatter.ofPattern("HH:mm")) : null;
         this.etc = dog.getEtc();
     }
 }
