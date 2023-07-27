@@ -2,11 +2,13 @@ package com.idog.FOPPY.dto.dog;
 
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.PetSex;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
@@ -20,5 +22,25 @@ public class DogInfoRequest {
     private String disease;  // 질병
     private Boolean neutered;
 
-    private Boolean isMissing;
+    private MissingInfo isMissing; // 실종 정보
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MissingInfo {
+        @NotNull
+        private String missingCity; // 실종 장소 (시)
+        @NotNull
+        private String missingGu; // 실종 장소 (구)
+        @NotNull
+        private String missingDong; // 실종 장소 (동)
+        @NotNull
+        private String missingDetailedLocation; // 실종 장소 (상세 주소)
+        @NotNull
+        private LocalDate missDate; // 실종 날짜
+        @NotNull
+        private LocalTime missTime; //실종 시간
+        @NotNull
+        private String etc; // 실종 시 특이 사항
+    }
 }

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idog.FOPPY.domain.Breed;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
-import com.idog.FOPPY.dto.dog.DogResponse;
-import com.idog.FOPPY.dto.dog.MissingDogResponse;
-import com.idog.FOPPY.dto.dog.MissingInfoRequest;
-import com.idog.FOPPY.dto.dog.DogInfoRequest;
+import com.idog.FOPPY.dto.dog.*;
 import com.idog.FOPPY.repository.DogRepository;
 import com.idog.FOPPY.repository.DogSpecification;
 import com.idog.FOPPY.repository.UserRepository;
@@ -36,7 +33,7 @@ public class DogService {
     private final S3Service s3Service;
 
     @Transactional
-public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
+public Long save(DogCreateRequest dogCreateRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = (String) authentication.getPrincipal();
 
@@ -81,23 +78,13 @@ public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFil
                 }
             }
         }
-        Dog dog = user.addDog(dogInfoRequest.getName(), dogInfoRequest.getBirth(), dogInfoRequest.getSex(), dogInfoRequest.getBreed(),
-                dogInfoRequest.getNote(), dogInfoRequest.getDisease(), dogInfoRequest.getNeutered(), dogInfoRequest.getIsMissing(), imgUrlList, noseImgUrlList);
+        Dog dog = user.addDog(dogCreateRequest.getName(), dogCreateRequest.getBirth(), dogCreateRequest.getSex(), dogCreateRequest.getBreed(),
+                dogCreateRequest.getNote(), dogCreateRequest.getDisease(), dogCreateRequest.getNeutered(), imgUrlList, noseImgUrlList);
 
         dogRepository.save(dog);
 
         return dog.getId();
 
-    }
-        public Long setMissing(Long id, MissingInfoRequest missingInfo) {
-        Dog dog = dogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid dog ID"));
-
-        dog.markAsMissing(missingInfo);
-
-        dogRepository.save(dog);
-
-        return dog.getId();
     }
 
     @Transactional
@@ -134,5 +121,9 @@ public Long save(DogInfoRequest dogInfoRequest, List<MultipartFile> multipartFil
                 .collect(Collectors.toList());
 
         return dogResponses;
+    }
+
+    public void delete(Long dogId) {
+        dogRepository.deleteById(dogId);
     }
 }
