@@ -1,5 +1,6 @@
 package com.idog.FOPPY.domain;
 
+import com.idog.FOPPY.dto.dog.DogInfoRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,8 +50,8 @@ public class User implements UserDetails {
     }
 
     // 연관관계 편의 메서드
-    public Dog addDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered, Boolean isMissing, List<String> imgUrlList, List<String> noseImgUrlList) {
-        Dog dog = Dog.createDog(name, birth, sex, breed, note, disease, neutered, isMissing, imgUrlList, noseImgUrlList);
+    public Dog addDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered, List<String> imgUrlList, List<String> noseImgUrlList) {
+        Dog dog = Dog.createDog(name, birth, sex, breed, note, disease, neutered, imgUrlList, noseImgUrlList);
         this.dogs.add(dog);
         dog.setUser(this); // Assuming you have a setUser method in Dog entity
         return dog;

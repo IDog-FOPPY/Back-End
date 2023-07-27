@@ -2,7 +2,6 @@ package com.idog.FOPPY.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.idog.FOPPY.dto.dog.DogInfoRequest;
-import com.idog.FOPPY.dto.dog.MissingInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -61,7 +60,8 @@ public class Dog {
     private User user;
 
     //== 생성 메서드 ==//
-    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered, Boolean isMissing, List<String> imgUrlList, List<String> noseImgUrlList){
+    public static Dog createDog(String name, LocalDate birth, PetSex sex, Breed breed, String note, String disease, Boolean neutered,
+                                List<String> imgUrlList, List<String> noseImgUrlList){
         Dog dog = new Dog();
         dog.setName(name);
         dog.setBirth(birth);
@@ -70,37 +70,53 @@ public class Dog {
         dog.setNote(note);
         dog.setDisease(disease);
         dog.setNeutered(neutered);
-        dog.setIsMissing(isMissing);
         dog.setImgUrlList(imgUrlList);
         dog.setNoseImgUrlList(noseImgUrlList);
+        dog.setIsMissing(false);
         return dog;
     }
 
     public void update(DogInfoRequest request) {
-
-        this.name = request.getName();
-        this.birth = request.getBirth();
-        this.sex = request.getSex();
-        this.breed = request.getBreed();
-        this.note = request.getNote();
-        this.disease = request.getDisease();
-        this.neutered = request.getNeutered();
-        this.isMissing = request.getIsMissing();
+        if (request.getName() != null) {
+            this.name = request.getName();
+        }
+        if (request.getBirth() != null) {
+            this.birth = request.getBirth();
+        }
+        if (request.getSex() != null) {
+            this.sex = request.getSex();
+        }
+        if (request.getBreed() != null) {
+            this.breed = request.getBreed();
+        }
+        if (request.getNote() != null) {
+            this.note = request.getNote();
+        }
+        if (request.getDisease() != null) {
+            this.disease = request.getDisease();
+        }
+        if (request.getNeutered() != null) {
+            this.neutered = request.getNeutered();
+        }
+        if (request.getIsMissing() != null) {
+            this.isMissing = true;
+            DogInfoRequest.MissingInfo missingInfo = request.getIsMissing();
+            this.missingCity = missingInfo.getMissingCity();
+            this.missingGu = missingInfo.getMissingGu();
+            this.missingDong = missingInfo.getMissingDong();
+            this.missingDetailedLocation = missingInfo.getMissingDetailedLocation();
+            this.missDate = missingInfo.getMissDate();
+            this.missTime = missingInfo.getMissTime();
+            this.etc = missingInfo.getEtc();
+        } else {
+            this.isMissing = false;
+        }
     }
+
+
 
     private void setNeutered(Boolean neutered) {
         this.neutered = neutered;
-    }
-
-    public void markAsMissing(MissingInfoRequest missingInfo) {
-        this.isMissing = true;
-        this.missingCity = missingInfo.getMissingCity();
-        this.missingGu = missingInfo.getMissingGu();
-        this.missingDong = missingInfo.getMissingDong();
-        this.missingDetailedLocation = missingInfo.getMissingDetailedLocation();
-        this.missDate = missingInfo.getMissDate();
-        this.missTime = missingInfo.getMissTime();
-        this.etc = missingInfo.getEtc();
     }
 
     private void setName(String name) { this.name = name; }
