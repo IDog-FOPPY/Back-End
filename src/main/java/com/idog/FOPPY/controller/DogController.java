@@ -88,10 +88,23 @@ public class DogController {
                 .body(response);
     }
 
-    @DeleteMapping ("/{id}")
+    @GetMapping("/{dogId}")
+    @Operation(summary = "강아지 정보 조회")
+    public ResponseEntity<ResponseDTO<DogInfoResponse>> getDetail(@PathVariable Long dogId) {
+        DogInfoResponse dogInfoResponse = dogService.getDetail(dogId);
+        ResponseDTO<DogInfoResponse> response = new ResponseDTO<>();
+        response.setStatus(true);
+        response.setMessage("get my dogs successfully.");
+        response.setData(dogInfoResponse);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @DeleteMapping ("/{dogId}")
     @Operation(summary = "강아지 삭제")
-    public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Long id) {
-        dogService.delete(id);
+    public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Long dogId) {
+        dogService.delete(dogId);
         ResponseDTO<Void> response = new ResponseDTO<>();
         response.setStatus(true);
         response.setMessage("Dog deletion successful.");

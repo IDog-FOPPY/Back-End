@@ -42,9 +42,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/index.html").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Added line
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/ws/**").permitAll()  // FIXME
                 )
