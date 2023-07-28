@@ -12,11 +12,14 @@ import com.idog.FOPPY.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Pageable;
+
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -88,14 +91,14 @@ public Long save(DogCreateRequest dogCreateRequest, List<MultipartFile> multipar
     }
 
     @Transactional
-    public List<MissingDogResponse> getMissingDogs(String missingGu, String missingDong, LocalDate startDate, LocalDate endDate, Breed breed) {
-        List<Dog> dogs = dogRepository.findAll(DogSpecification.missingAndAreaAndDateAndBreed(
-                missingGu, missingDong, startDate, endDate, breed));
+    public Page<MissingDogResponse> getMissingDogs(String missingGu, String missingDong, LocalDate startDate, LocalDate endDate, Breed breed, Pageable pageable) {
+        Page<Dog> dogs = dogRepository.findAll(DogSpecification.missingAndAreaAndDateAndBreed(
+                missingGu, missingDong, startDate, endDate, breed), pageable);
 
-        return dogs.stream()
-                .map(MissingDogResponse::of)
-                .collect(Collectors.toList());
+
+        return dogs.map(MissingDogResponse::of);
     }
+
     @Transactional
     public Long update(Long dogId, DogInfoRequest request) {
         Dog dog = dogRepository.findById(dogId)
