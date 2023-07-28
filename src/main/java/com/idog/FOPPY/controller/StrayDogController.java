@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -45,17 +44,17 @@ public class StrayDogController {
 
     @PostMapping("")
     @Operation(summary = "유기견 일치 비문 검색")
-    public ResponseEntity<ResponseDTO<List<FindStrayResponse>>> register(@RequestPart("file") MultipartFile multipartFile) throws IOException {
-        List<FindStrayResponse> stray = strayService.findStray(multipartFile);
-
+    public ResponseEntity<ResponseDTO<List<FindStrayResponse>>> register(@RequestPart("file") MultipartFile multipartFile) throws Exception {
         ResponseDTO<List<FindStrayResponse>> response = new ResponseDTO<>();
+
+        List<FindStrayResponse> stray = strayService.findStray(multipartFile);
         response.setStatus(true);
         response.setMessage("Stray dog find successful.");
         response.setData(stray);
-
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
     }
+
 
     @GetMapping("")
     @Operation(summary = "조건에 따른 유기견 강아지 조회")
