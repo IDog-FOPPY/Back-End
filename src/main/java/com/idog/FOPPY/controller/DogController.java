@@ -7,6 +7,8 @@ import com.idog.FOPPY.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,22 +53,23 @@ public class DogController {
         response.setMessage("Dog info change successful.");
         response.setData(setDogId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }
 
     @GetMapping("/missing")
     @Operation(summary = "조건에 따른 실종된 강아지 조회")
-    public ResponseEntity<ResponseDTO<List<MissingDogResponse>>> getMissingDogs(
+    public ResponseEntity<ResponseDTO<Page<MissingDogResponse>>> getMissingDogs(
             @RequestParam(required = false) String missingGu,
             @RequestParam(required = false) String missingDong,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(required = false) Breed breed
+            @RequestParam(required = false) Breed breed,
+            Pageable pageable
     ) {
-        List<MissingDogResponse> missingDogs = dogService.getMissingDogs(missingGu, missingDong, startDate, endDate, breed);
+        Page<MissingDogResponse> missingDogs = dogService.getMissingDogs(missingGu, missingDong, startDate, endDate, breed, pageable);
 
-        ResponseDTO<List<MissingDogResponse>> response = new ResponseDTO<>();
+        ResponseDTO<Page<MissingDogResponse>> response = new ResponseDTO<>();
         response.setStatus(true);
         response.setMessage("Missing dogs fetched successfully.");
         response.setData(missingDogs);
@@ -74,6 +77,7 @@ public class DogController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }
+
 
     @GetMapping("")
     @Operation(summary = "내 강아지 조회")

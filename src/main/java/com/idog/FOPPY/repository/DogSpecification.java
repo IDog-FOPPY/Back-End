@@ -29,7 +29,6 @@ public class DogSpecification {
                 if (missingDong != null) {
                     predicates.add(cb.equal(root.get("missingDong"), missingDong));
                 }
-
                 if (startDate != null && endDate != null) {
                     predicates.add(cb.between(root.get("missDate"), startDate, endDate));
                 }
