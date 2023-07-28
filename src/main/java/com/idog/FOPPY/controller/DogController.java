@@ -29,7 +29,7 @@ public class DogController {
     private final DogService dogService;
     @PostMapping("/create")
     @Operation(summary = "반려견 등록")
-    public ResponseEntity<ResponseDTO<Long>> register(@RequestPart DogCreateRequest request,
+    public ResponseEntity<ResponseDTO<Long>> register(@RequestBody DogCreateRequest request,
                                                       @RequestPart("file") List<MultipartFile> multipartFile) throws IOException, InterruptedException {
         Long savedId = dogService.save(request, multipartFile);
 

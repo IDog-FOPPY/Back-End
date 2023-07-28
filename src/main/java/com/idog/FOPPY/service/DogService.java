@@ -36,7 +36,7 @@ public class DogService {
     private final S3Service s3Service;
 
     @Transactional
-public Long save(DogCreateRequest dogCreateRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
+    public Long save(DogCreateRequest dogCreateRequest, List<MultipartFile> multipartFile) throws IOException, InterruptedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = (String) authentication.getPrincipal();
 
