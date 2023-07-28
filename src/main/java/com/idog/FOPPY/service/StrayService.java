@@ -52,7 +52,7 @@ public class StrayService {
     }
 
     @Transactional
-    public List<FindStrayResponse> findStray(MultipartFile multipartFile) throws IOException {
+    public List<FindStrayResponse> findStray(MultipartFile multipartFile) throws Exception {
         OkHttpClient client = new OkHttpClient();
 
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
@@ -71,41 +71,61 @@ public class StrayService {
 
         String responseBody = response.body().string();
         JsonNode responseJson = new ObjectMapper().readTree(responseBody);
+        System.out.println(responseJson.toString());
 
-        Map<String, Double> filenameSimilarityMap = new HashMap<>();
-        if (responseJson.isArray()) {
-            for (JsonNode resultNode : responseJson) {
-                if (resultNode.has("filename") && resultNode.has("similarity")) {
-                    String filename = resultNode.get("filename").asText(); // remove .replace("nose/", "");
-                    double similarity = resultNode.get("similarity").asDouble();
-                    filenameSimilarityMap.put(filename, similarity);
+// Check the status of the response
+        if (responseJson.has("status")) {
+            int status = responseJson.get("status").asInt();
+
+            // Only process the data if the status is 200
+            if (status == 200) {
+
+                JsonNode data = responseJson.get("data");
+                Map<String, Double> filenameSimilarityMap = new HashMap<>();
+
+                if (data.isArray()) {
+                    for (JsonNode resultNode : data) {
+                        if (resultNode.has("filename") && resultNode.has("similarity")) {
+                            String filename = resultNode.get("filename").asText();
+                            double similarity = resultNode.get("similarity").asDouble();
+                            filenameSimilarityMap.put(filename, similarity);
+                        }
+                    }
                 }
-            }
-        }
 
-        Map<Long, FindStrayResponse> responsesMap = new HashMap<>();
+                Map<Long, FindStrayResponse> responsesMap = new HashMap<>();
 
-        List<Dog> allDogs = dogRepository.findAll();
-        for (Dog dog : allDogs) {
-            for (String filename : dog.getNoseImgUrlList()) {
-                if (filenameSimilarityMap.containsKey(filename)) {
-                    FindStrayResponse findStrayResponse = new FindStrayResponse(filenameSimilarityMap.get(filename), dog);
-                    responsesMap.putIfAbsent(dog.getId(), findStrayResponse); // Dog's ID used as key, won't overwrite if present
+                List<Dog> allDogs = dogRepository.findAll();
+                for (Dog dog : allDogs) {
+                    for (String filename : dog.getNoseImgUrlList()) {
+                        if (filenameSimilarityMap.containsKey(filename)) {
+                            FindStrayResponse findStrayResponse = new FindStrayResponse(filenameSimilarityMap.get(filename), dog);
+                            responsesMap.putIfAbsent(dog.getId(), findStrayResponse);
+                        }
+                    }
                 }
+
+                List<FindStrayResponse> responses = new ArrayList<>(responsesMap.values());
+
+                Collections.sort(responses, new Comparator<FindStrayResponse>() {
+                    @Override
+                    public int compare(FindStrayResponse o1, FindStrayResponse o2) {
+                        return Double.compare(o2.getSimilarity(), o1.getSimilarity());
+                    }
+                });
+
+                return responses;
+
             }
+            else {
+                // If the status is not 200, return the status code in the data
+                throw new Exception(String.valueOf(status));
+            }
+        } else {
+            throw new RuntimeException("Invalid response: no status field");
         }
-
-        List<FindStrayResponse> responses = new ArrayList<>(responsesMap.values());
-
-        Collections.sort(responses, new Comparator<FindStrayResponse>() {
-            @Override
-            public int compare(FindStrayResponse o1, FindStrayResponse o2) {
-                return Double.compare(o2.getSimilarity(), o1.getSimilarity()); // for descending order
-            }
-        });
-
-        return responses;
     }
+
     @Transactional
     public List<StrayDogResponse> sort(String missingGu, String missingDong, LocalDate startDate, LocalDate endDate, Breed breed) {
         List<StrayDog> strayDogs = strayDogRepository.findAll(StrayDogSpecification.AreaAndDateAndBreed(
