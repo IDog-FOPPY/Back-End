@@ -64,7 +64,7 @@ public class DogService {
 
 // Build the Request
         Request request = new Request.Builder()
-                .url("http://3.39.235.118:8000/noseDetect") // Replace with your FastAPI URL
+                .url("http://3.38.105.96:8000/noseDetect") // Replace with your FastAPI URL
                 .post(multipartBodyBuilder.build())
                 .build();
 

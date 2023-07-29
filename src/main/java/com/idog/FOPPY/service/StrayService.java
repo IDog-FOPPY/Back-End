@@ -63,7 +63,7 @@ public class StrayService {
                 RequestBody.create(multipartFile.getBytes(), MediaType.parse(multipartFile.getContentType())));
 
         Request request = new Request.Builder()
-                .url("http://3.39.235.118:8000/dogIdentification")
+                .url("http://3.38.105.96:8000/dogIdentification")
                 .post(multipartBodyBuilder.build())
                 .build();
 
