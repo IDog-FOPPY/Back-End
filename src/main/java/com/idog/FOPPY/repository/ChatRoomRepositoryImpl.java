@@ -2,7 +2,6 @@ package com.idog.FOPPY.repository;
 
 import com.idog.FOPPY.domain.ChatRoom;
 import com.idog.FOPPY.domain.User;
-import com.idog.FOPPY.dto.chat.ChatRoomDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +42,10 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
         return em.createQuery("select c from ChatRoom c where c.member1.id = :memberId or c.member2.id = :memberId", ChatRoom.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
+    }
+
+    @Override
+    public void deleteById(Long roomId) {
+        em.remove(em.find(ChatRoom.class, roomId));
     }
 }

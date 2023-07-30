@@ -30,14 +30,14 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "member_id2")
     private User member2;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "last_message_id", nullable = true)
     private ChatMessage lastMessage;
 
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "chat_room_member",
             joinColumns = @JoinColumn(name = "chat_room_id"),
@@ -58,6 +58,10 @@ public class ChatRoom extends BaseEntity {
         return chatRoom;
     }
 
+    public void updateChatRoomName(String chatRoomName) {
+        this.name = chatRoomName;
+    }
+
     public ChatMessage addChatMessage(ChatMessage chatMessage) {
         this.chatMessages.add(chatMessage);
         if (chatMessage.getChatRoom() != this) {
@@ -76,7 +80,11 @@ public class ChatRoom extends BaseEntity {
         }
     }
 
-    public void addChatRoomMembers(User user) {
+    public User addChatRoomMembers(User user) {
         this.chatRoomMembers.add(user);
+        if(!user.getChatRooms().contains(this)) {
+            user.getChatRooms().add(this);
+        }
+        return user;
     }
 }

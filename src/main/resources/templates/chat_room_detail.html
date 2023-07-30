@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${chatRoom.member1NickName},${chatRoom.member2NickName}">Chat Room Detail</title>
+    <!-- sockjs와 stomp.js 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+</head>
+<body>
+<h1 th:text="${chatRoom.member1NickName},${chatRoom.member2NickName}">Chat Room Detail</h1>
+<div id="chatBox">
+    <!-- 채팅 내용을 출력하는 부분. 메시지를 받아서 동적으로 출력할 예정 -->
+    <div th:each="message : ${chatRoom.chatMessages}">
+        <p th:text="${message.senderNickName + ': ' + message.content}"></p>
+    </div>
+</div>
+<div>
+    <!-- 메시지를 보내는 입력 폼 -->
+    <form id="chatForm">
+        <input type="text" id="messageInput" name="message" />
+        <input type="submit" value="Send" />
+    </form>
+    <button onClick="sendMessage();">Send</button>
+</div>
+
+<script>
+    // sockjs와 stomp.js를 이용하여 WebSocket 연결을 설정
+    var socket = new SockJS('/ws/chat'); // 서버의 WebSocket 엔드포인트 주소로 변경해야 함
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+
+        // 채팅 메시지 수신 처리
+        // stompClient.subscribe('/sub/room/' + /* 채팅방 ID */, function (message) {
+        stompClient.subscribe('/sub/room/' + 1, function (message) {
+            var chatMessage = JSON.parse(message.body);
+            displayChatMessage(chatMessage);
+        });
+    });
+
+    // 메시지를 보내는 함수
+    function sendMessage() {
+        var messageInput = document.getElementById("messageInput");
+        var message = messageInput.value;
+        // 채팅방 ID와 메시지를 서버로 보냄
+        // stompClient.send("/pub/send", {}, JSON.stringify({ "roomId": /* 채팅방 ID */, "message": message }));
+        stompClient.send("/pub/send", {}, JSON.stringify({ "roomId": 1, "message": message }));
+        messageInput.value = "";
+    }
+
+    // 채팅 메시지를 화면에 출력하는 함수
+    function displayChatMessage(message) {
+        var chatBox = document.getElementById("chatBox");
+        var chatMessageElement = document.createElement("p");
+        chatMessageElement.textContent = message.content;
+        chatBox.appendChild(chatMessageElement);
+    }
+
+    // 메시지 보내기 버튼 클릭 이벤트 처리
+    document.getElementById("chatForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendMessage();
+    });
+</script>
+</body>
+</html>

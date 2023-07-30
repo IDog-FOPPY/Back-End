@@ -6,6 +6,7 @@ import com.idog.FOPPY.dto.chat.ChatRoomDTO;
 import com.idog.FOPPY.repository.ChatRoomRepository;
 import com.idog.FOPPY.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,4 +53,18 @@ public class ChatRoomService {
         Optional<ChatRoomDTO.Detail> room = chatRoomRepository.findById(roomId).map(ChatRoomDTO.Detail::of);
         return room.orElseThrow();
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteChatRoom(Long roomId) {
+        chatRoomRepository.deleteById(roomId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<?> updateChatRoomName(Long roomId, String newChatRoomName) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow();
+        chatRoom.updateChatRoomName(newChatRoomName);
+        chatRoomRepository.save(chatRoom);
+        return ResponseEntity.ok("The chat room name has been changed.");
+    }
+
 }

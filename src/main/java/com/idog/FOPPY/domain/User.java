@@ -41,7 +41,7 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user")
     private final List<Dog> dogs = new ArrayList<>();
 
-    @OneToMany()
+    @OneToMany
     private final List<ChatRoom> chatRooms = new ArrayList<>();
 
     @Builder

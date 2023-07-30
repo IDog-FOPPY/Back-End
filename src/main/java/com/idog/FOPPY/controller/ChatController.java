@@ -1,10 +1,6 @@
 package com.idog.FOPPY.controller;
 
-import com.idog.FOPPY.domain.ChatMessage;
-import com.idog.FOPPY.dto.chat.ChatMessageDTO;
-import com.idog.FOPPY.dto.chat.ChatRoomDTO;
-import com.idog.FOPPY.dto.chat.ErrorResponse;
-import com.idog.FOPPY.dto.chat.Result;
+import com.idog.FOPPY.dto.chat.*;
 import com.idog.FOPPY.service.ChatRoomService;
 import com.idog.FOPPY.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -27,7 +26,7 @@ public class ChatController {
     @MessageMapping("/send") // endpoint: /app/private
     public void send(@Payload ChatMessageDTO.Send message) {
         chatService.sendMessage(message);
-        template.convertAndSend("/sub/chat/room/" + message.getReceiver(), message);
+        template.convertAndSend("/sub/room/" + message.getRoomId(), message);  // /sub/room/{roomId} 구독자에게 메시지 전달
 //        template.convertAndSendToUser(message.getReceiver(), "/queue", message); // /user/{username}/queue 구독자에게 메시지 전달
     }
 
@@ -41,23 +40,41 @@ public class ChatController {
         }
     }
 
+//    @GetMapping("/room")
+//    public ResponseEntity<?> getChatRoomList(@RequestParam Long memberId) {
+//        return ResponseEntity.ok(chatRoomService.getChatRoomList(memberId));
+//    }
+//
+//    @GetMapping("/room/{roomId}")
+//    public ResponseEntity<?> getChatRoomDetail(@PathVariable Long roomId) {
+//        return ResponseEntity.ok(chatRoomService.getChatRoomDetail(roomId));
+//    }
     @GetMapping("/room")
-    public ResponseEntity<?> getChatRoomList(@RequestParam Long memberId) {
-        return ResponseEntity.ok(chatRoomService.getChatRoomList(memberId));
+    public String getChatRoomList(@RequestParam Long memberId, Model model) {
+        List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList(memberId);
+        System.out.println(chatRooms);
+        model.addAttribute("chatRooms", chatRooms);
+        return "chat_room_list";
     }
 
     @GetMapping("/room/{roomId}")
-    public ResponseEntity<?> getChatRoomDetail(@PathVariable Long roomId) {
-        return ResponseEntity.ok(chatRoomService.getChatRoomDetail(roomId));
+    public String getChatRoomDetail(@PathVariable Long roomId, Model model) {
+        ChatRoomDTO.Detail chatRoom = chatRoomService.getChatRoomDetail(roomId);
+        model.addAttribute("chatRoom", chatRoom);
+        return "chat_room_detail";
     }
+
+    @PatchMapping("/room/{roomId}")
+    public ResponseEntity<?> updateChatRoom(@PathVariable Long roomId, @RequestBody ChatRoomNameRequest request) {
+        return ResponseEntity.ok(chatRoomService.updateChatRoomName(roomId, request.getNewChatRoomName()));
+    }
+}
 
 //    @DeleteMapping("/room/{roomId}")
 //    public ResponseEntity<?> deleteChatRoom(@PathVariable Long roomId) {
 //        chatRoomService.deleteChatRoom(roomId);
 //        return ResponseEntity.ok().build();
 //    }
-
-
 
 
 //    @MessageMapping("/chatroom/{roomId}")
@@ -100,4 +117,4 @@ public class ChatController {
 //    public void message(ChatMessageDTO message){
 //        template.convertAndSend("/queue/chat/room/" + message.getRoomId(), message);
 //    }
-}
+//}

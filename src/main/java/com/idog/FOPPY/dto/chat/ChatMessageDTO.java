@@ -17,12 +17,15 @@ public class ChatMessageDTO {
 //            JOIN, CHAT, LEAVE
 //        }
         private String content;
-        private User sender;
-        private User receiver;
-        private ChatRoom chatRoom;
+//        private User sender;
+//        private User receiver;
+//        private ChatRoom chatRoom;
+        private Long senderId;
+        private Long receiverId;
+        private Long roomId;
 //        private MessageType messageType;
 
-        public ChatMessage toEntity() {
+        public ChatMessage toEntity(User sender, User receiver, ChatRoom chatRoom) {
             return ChatMessage.builder()
                     .content(content)
                     .sender(sender)
