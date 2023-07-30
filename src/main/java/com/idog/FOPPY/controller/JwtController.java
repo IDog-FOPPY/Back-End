@@ -1,7 +1,7 @@
 package com.idog.FOPPY.controller;
 
-import com.idog.FOPPY.dto.User.CreateAccessTokenRequest;
-import com.idog.FOPPY.dto.User.CreateAccessTokenResponse;
+import com.idog.FOPPY.dto.user.CreateAccessTokenRequest;
+import com.idog.FOPPY.dto.user.CreateAccessTokenResponse;
 import com.idog.FOPPY.service.JwtService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

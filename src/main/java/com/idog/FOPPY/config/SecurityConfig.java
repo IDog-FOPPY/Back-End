@@ -1,8 +1,10 @@
 package com.idog.FOPPY.config;
 
 import com.idog.FOPPY.service.UserDetailService;
+import com.idog.FOPPY.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,7 +35,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
         // 스프링 시큐리티 비활성화
         return (web) -> web.ignoring()
-                .requestMatchers("/static/**",
+                .requestMatchers("/templates/**",
                         "swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**", "sign-api.html");
     }
 
@@ -54,8 +56,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Added line
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/api/**").authenticated()
+//                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/ws/**").permitAll()  // FIXME
+                        .requestMatchers("/**").permitAll()  // FIXME
                 )
         ;
 
