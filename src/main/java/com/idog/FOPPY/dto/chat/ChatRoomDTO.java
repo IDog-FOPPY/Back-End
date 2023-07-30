@@ -2,19 +2,15 @@ package com.idog.FOPPY.dto.chat;
 
 import com.idog.FOPPY.domain.ChatRoom;
 import com.idog.FOPPY.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Data
 public class ChatRoomDTO {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Request {
 //        private User member1;
 //        private User member2;
@@ -31,6 +27,7 @@ public class ChatRoomDTO {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     @Builder
     public static class Response {
         private Long id;
@@ -54,6 +51,7 @@ public class ChatRoomDTO {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     @Builder
     public static class Detail {
         private Long id;
