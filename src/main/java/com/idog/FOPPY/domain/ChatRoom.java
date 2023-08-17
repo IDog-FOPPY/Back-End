@@ -23,11 +23,11 @@ public class ChatRoom extends BaseEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id1")
+    @JoinColumn(name = "member1_id")
     private User member1;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id2")
+    @JoinColumn(name = "member2_id")
     private User member2;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -80,11 +80,11 @@ public class ChatRoom extends BaseEntity {
         }
     }
 
-    public User addChatRoomMembers(User user) {
-        this.chatRoomMembers.add(user);
-        if(!user.getChatRooms().contains(this)) {
-            user.getChatRooms().add(this);
-        }
-        return user;
-    }
+//    public User addChatRoomMembers(User user) {
+//        this.chatRoomMembers.add(user);
+//        if(!user.getChatRooms().contains(this)) {
+//            user.getChatRooms().add(this);
+//        }
+//        return user;
+//    }
 }

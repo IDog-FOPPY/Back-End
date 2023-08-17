@@ -1,8 +1,11 @@
 package com.idog.FOPPY.controller;
 
+import com.idog.FOPPY.dto.ResponseDTO;
 import com.idog.FOPPY.dto.chat.*;
 import com.idog.FOPPY.service.ChatRoomService;
 import com.idog.FOPPY.service.ChatService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +15,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
+@Tag(name = "chat", description = "채팅 API")
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
@@ -23,7 +29,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
 
-    @MessageMapping("/send") // endpoint: /app/private
+    @MessageMapping("/send")
     public void send(@Payload ChatMessageDTO.Send message) {
         chatService.sendMessage(message);
         template.convertAndSend("/sub/room/" + message.getRoomId(), message);  // /sub/room/{roomId} 구독자에게 메시지 전달
@@ -31,51 +37,70 @@ public class ChatController {
     }
 
     @PostMapping("/room")
-    public ResponseEntity<?> join(@RequestBody ChatRoomDTO.Request request) {
+    @Operation(summary = "채팅방 생성")
+    public ResponseEntity<ResponseDTO<Long>> join(@RequestBody ChatRoomDTO.Request request) {
         try {
             Long roomId = chatRoomService.join(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new Result<>(roomId));
+
+            ResponseDTO<Long> response = new ResponseDTO<>();
+            response.setStatus(true);
+            response.setMessage("Success");
+            response.setData(roomId);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(), "400"));
+            return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
         }
     }
 
-//    @GetMapping("/room")
-//    public ResponseEntity<?> getChatRoomList(@RequestParam Long memberId) {
-//        return ResponseEntity.ok(chatRoomService.getChatRoomList(memberId));
-//    }
-//
-//    @GetMapping("/room/{roomId}")
-//    public ResponseEntity<?> getChatRoomDetail(@PathVariable Long roomId) {
-//        return ResponseEntity.ok(chatRoomService.getChatRoomDetail(roomId));
-//    }
-    @GetMapping("/room")
-    public String getChatRoomList(@RequestParam Long memberId, Model model) {
-        List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList(memberId);
-        System.out.println(chatRooms);
-        model.addAttribute("chatRooms", chatRooms);
-        return "chat_room_list";
+    @GetMapping("/rooms")
+    @Operation(summary = "채팅방 목록 조회")
+    public ResponseEntity<ResponseDTO<List<ChatRoomDTO.Response>>> getChatRoomList(@RequestParam Long memberId) {
+        try {
+            List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList(memberId);
+
+            ResponseDTO<List<ChatRoomDTO.Response>> response = new ResponseDTO<>();
+            response.setStatus(true);
+            response.setMessage("Success");
+            response.setData(chatRooms);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
+        }
     }
 
     @GetMapping("/room/{roomId}")
-    public String getChatRoomDetail(@PathVariable Long roomId, Model model) {
-        ChatRoomDTO.Detail chatRoom = chatRoomService.getChatRoomDetail(roomId);
-        model.addAttribute("chatRoom", chatRoom);
-        return "chat_room_detail";
+    @Operation(summary = "채팅방 상세 조회")
+    public ResponseEntity<ResponseDTO<ChatRoomDTO.Detail>> getChatRoomDetail(@PathVariable Long roomId) {
+        try {
+            ChatRoomDTO.Detail chatRoom = chatRoomService.getChatRoomDetail(roomId);
+
+            ResponseDTO<ChatRoomDTO.Detail> response = new ResponseDTO<>();
+            response.setStatus(true);
+            response.setMessage("Success");
+            response.setData(chatRoom);
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
+        }
     }
 
-    @PatchMapping("/room/{roomId}")
-    public ResponseEntity<?> updateChatRoom(@PathVariable Long roomId, @RequestBody ChatRoomNameRequest request) {
-        return ResponseEntity.ok(chatRoomService.updateChatRoomName(roomId, request.getNewChatRoomName()));
+    @DeleteMapping("/room/{roomId}")
+    @Operation(summary = "채팅방 삭제")
+    public ResponseEntity<ResponseDTO<Void>> deleteChatRoom(@PathVariable Long roomId) {
+        try {
+            chatRoomService.deleteChatRoom(roomId);
+
+            ResponseDTO<Void> response = new ResponseDTO<>();
+            response.setStatus(true);
+            response.setMessage("Success");
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
+        }
     }
 }
-
-//    @DeleteMapping("/room/{roomId}")
-//    public ResponseEntity<?> deleteChatRoom(@PathVariable Long roomId) {
-//        chatRoomService.deleteChatRoom(roomId);
-//        return ResponseEntity.ok().build();
-//    }
-
 
 //    @MessageMapping("/chatroom/{roomId}")
 //    @SendTo("/sub/chatroom/{roomId}")

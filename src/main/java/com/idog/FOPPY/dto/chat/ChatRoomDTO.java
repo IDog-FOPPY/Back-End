@@ -14,8 +14,8 @@ public class ChatRoomDTO {
     public static class Request {
 //        private User member1;
 //        private User member2;
-        private Long memberId1;
-        private Long memberId2;
+        private Long member1Id;
+        private Long member2Id;
 
         public ChatRoom toEntity(User member1, User member2) {
             return ChatRoom.builder()
@@ -59,7 +59,7 @@ public class ChatRoomDTO {
         private Long member2Id;
         private String member1NickName;
         private String member2NickName;
-//        private String createdAt;
+        private String createdAt;
         private List<ChatMessageDTO.Response> chatMessages;
 
         public static Detail of(ChatRoom chatRoom) {
@@ -69,24 +69,9 @@ public class ChatRoomDTO {
                     .member2Id(chatRoom.getMember2().getId())
                     .member1NickName(chatRoom.getMember1().getNickName())
                     .member2NickName(chatRoom.getMember2().getNickName())
-//                    .createdAt(chatRoom.getCreatedAt().toString())
+                    .createdAt(chatRoom.getCreatedAt().toString())
                     .chatMessages(chatRoom.getChatMessages().stream().map(ChatMessageDTO.Response::of).toList())
                     .build();
         }
     }
-
-//    private String roomId;
-//    private String name;
-////    private Long userCount;
-////    private String lastMessage;
-////    private String lastMessageTime;
-//
-//    private Set<WebSocketSession> messages = new HashSet<>();
-//
-//    public static ChatRoomDTO create(String name) {
-//        ChatRoomDTO chatRoom = new ChatRoomDTO();
-//        chatRoom.roomId = UUID.randomUUID().toString();
-//        chatRoom.name = name;
-//        return chatRoom;
-//    }
 }

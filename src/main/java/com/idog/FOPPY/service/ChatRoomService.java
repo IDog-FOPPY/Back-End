@@ -23,16 +23,16 @@ public class ChatRoomService {
 
     @Transactional(rollbackFor = Exception.class)
     public Long join(ChatRoomDTO.Request requestDto) throws IllegalStateException {
-        User member1 = userRepository.findById(requestDto.getMemberId1())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMemberId1()));
-        User member2 = userRepository.findById(requestDto.getMemberId2())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMemberId2()));
+        User member1 = userRepository.findById(requestDto.getMember1Id())
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMember1Id()));
+        User member2 = userRepository.findById(requestDto.getMember2Id())
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMember2Id()));
 
-        if (requestDto.getMemberId2().equals(requestDto.getMemberId1())) {
+        if (requestDto.getMember2Id().equals(requestDto.getMember1Id())) {
             throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
         }
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2);
-        if (chatRoom.isPresent()) {
+        if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             return chatRoom.get().getId();
         } else {
             return chatRoomRepository.save(requestDto.toEntity(member1, member2));
@@ -50,8 +50,8 @@ public class ChatRoomService {
 
     @Transactional(readOnly = true)
     public ChatRoomDTO.Detail getChatRoomDetail(Long roomId) {
-        Optional<ChatRoomDTO.Detail> room = chatRoomRepository.findById(roomId).map(ChatRoomDTO.Detail::of);
-        return room.orElseThrow();
+        Optional<ChatRoomDTO.Detail> roomDetail = chatRoomRepository.findById(roomId).map(ChatRoomDTO.Detail::of);
+        return roomDetail.orElseThrow(() -> new IllegalStateException("존재하지 않는 채팅방입니다. roomId: " + roomId));
     }
 
     @Transactional(rollbackFor = Exception.class)
