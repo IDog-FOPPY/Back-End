@@ -74,34 +74,41 @@ public class JwtProvider {
 
     // 토큰 검증
     public boolean validateToken(String token) {
-        LOGGER.info("[validateToken] 토큰 검증 시작");
         try {
             Jwts.parser()
                     .setSigningKey(accessSecretKey)
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            LOGGER.info("[validateToken] 토큰 검증 예외 발생");
+            LOGGER.info("[validateToken] Error: " + e.getMessage());
             return false;
         }
     }
 
     // 토큰으로부터 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        Claims claims = getClaims(token);
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
+//        return new UsernamePasswordAuthenticationToken(
+//                new org.springframework.security.core.userdetails.User(getUsername(token), "", authorities),
+//                token,
+//                authorities
+//        );
         return new UsernamePasswordAuthenticationToken(
-                new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities),
+                getUsername(token),
                 token,
                 authorities
         );
     }
 
-    // 토큰으로부터 회원 id 추출
     public Long getUserId(String token) {
         Claims claims = getClaims(token);
         return claims.get("id", Long.class);
+    }
+
+    public String getUsername(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("username", String.class);
     }
 
     private Claims getClaims(String token) {

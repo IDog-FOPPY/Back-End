@@ -18,10 +18,10 @@ public class JwtService {
             throw new IllegalArgumentException("Invalid refresh token");
         }
 
-        Long userId = refreshTokenService.findByRefreshToken(refreshToken).getId();
+        Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
         User user = userService.findById(userId);
 
 //        return jwtProvider.createToken(member, Duration.ofHours(1));
-        return jwtProvider.createAccessToken(user, 24 * 60 * 60 * 1000L);
+        return jwtProvider.createAccessToken(user, 24 * 60 * 60 * 1000L); // 1시간
     }
 }

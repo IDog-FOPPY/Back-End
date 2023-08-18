@@ -61,14 +61,14 @@ public class UserService {
             throw new IllegalArgumentException("password 틀림");
         }
 
-        String access_token = jwtProvider.createAccessToken(user, accessExpireTimeMs);
-        String refresh_token = jwtProvider.createRefreshToken(user, refreshExpireTimeMs);
+        String accessToken = jwtProvider.createAccessToken(user, accessExpireTimeMs);
+        String refreshToken = jwtProvider.createRefreshToken(user, refreshExpireTimeMs);
 
         return LoginUserResponse.builder()
                 .userId(user.getId())
                 .email(user.getUsername())
-                .accessToken(access_token)
-                .refreshToken(refresh_token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .tokenType("Bearer")
                 .build();
 
@@ -178,7 +178,7 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, ": Username is not found"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 id를 가진 사용자가 존재하지 않습니다."));
     }
 
     public void deleteAll() {

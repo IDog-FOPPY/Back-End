@@ -1,117 +1,54 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Chat Application</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        var socket = new SockJS('/ws/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log(frame);
+            // stompClient.subscribe('/topic/messages', function (result) {
+            stompClient.subscribe('/sub/room/2', function (result) {
+                show(JSON.parse(result.body));
+            });
+        });
+
+        function sendMessage() {
+            var content = document.getElementById('content').value;
+            var senderId = document.getElementById('senderId').value;
+            var receiverId = document.getElementById('receiverId').value;
+            stompClient.send("/pub/send", {},
+                JSON.stringify({'content': content, 'senderId': senderId, 'receiverId': receiverId}));
+        }
+
+        function show(message) {
+            var response = document.getElementById('messages');
+            var p = document.createElement('p');
+            p.innerHTML = "message: " + message.text;
+            response.appendChild(p);
+        }
+    </script>
 </head>
 <body>
-<h1>Chat Application</h1>
+<div>
+    <div>
+        <input type="text" id="senderId" placeholder="senderId"/>
+        <input type="text" id="receiverId" placeholder="receiverId"/>
+        <input type="text" id="content" placeholder="Text"/>
+        <button id="sendMessage" onClick="sendMessage();">Send</button>
+    </div>
+    <br/>
+    <div>
+    </div>
+    <br/>
+    <br/>
+    <br/>
 
-<!--<label for="username">Username:</label>-->
-<!--<input type="text" id="username" placeholder="Enter your username">-->
-<button onclick="connect()">Connect</button>
+    <div id="messages"></div>
 
-<div id="chatRoomList"></div>
-<div id="chatRoomDetail"></div>
-<input type="text" id="messageInput" placeholder="Enter your message">
-<button onclick="sendMessage()">Send</button>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
-<script>
-
-    let stompClient;
-    const baseUrl = '/api/chat';
-
-    function connect() {
-        const socket = new SockJS('/ws/chat');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, onConnected, onError);
-    }
-
-    function onConnected(result) {
-        // const username = document.getElementById('username').value;
-        // const roomId = 1; // Replace this with the actual roomId
-        stompClient.subscribe(`/sub/room/1`, onMessageReceived);
-        loadChatRoomList();
-        show(JSON.parse(result.body));
-    }
-
-    function onError(error) {
-        console.error('Could not connect to WebSocket server. Error:', error);
-    }
-
-    function loadChatRoomList() {
-        const memberId = 13; // Replace this with the actual memberId
-        fetch(`${baseUrl}/room?memberId=${memberId}`)
-            .then(response => response.json())
-            .then(data => displayChatRoomList(data))
-            .catch(error => console.error('Error fetching chat rooms:', error));
-    }
-
-    function displayChatRoomList(chatRooms) {
-        const chatRoomListDiv = document.getElementById('chatRoomList');
-        chatRoomListDiv.innerHTML = '<h2>Chat Rooms:</h2>';
-        chatRooms.forEach(chatRoom => {
-            const chatRoomLink = document.createElement('a');
-            chatRoomLink.textContent = chatRoom.name;
-            chatRoomLink.href = `javascript:loadChatRoomDetail(${chatRoom.id})`;
-            chatRoomListDiv.appendChild(chatRoomLink);
-            chatRoomListDiv.appendChild(document.createElement('br'));
-        });
-    }
-
-    function loadChatRoomDetail(roomId) {
-        fetch(`${baseUrl}/room/${roomId}`)
-            .then(response => response.json())
-            .then(data => displayChatRoomDetail(data))
-            .catch(error => console.error('Error fetching chat room detail:', error));
-    }
-
-    function displayChatRoomDetail(chatRoomDetail) {
-        const chatRoomDetailDiv = document.getElementById('chatRoomDetail');
-        chatRoomDetailDiv.innerHTML = `<h2>${chatRoomDetail.name}</h2>`;
-        chatRoomDetail.messages.forEach(message => {
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = `${message.sender}: ${message.content}`;
-            chatRoomDetailDiv.appendChild(messageDiv);
-        });
-    }
-
-    function sendMessage() {
-        const roomId = 1; // Replace this with the actual roomId
-        // const sender = document.getElementById('username').value;
-        const sender = 13;
-        // const receiver = 14;
-        const content = document.getElementById('messageInput').value;
-        const message = {
-            roomId: roomId,
-            sender: sender,
-            content: content
-        };
-        // fetch(`${baseUrl}/send`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(message)
-        // })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Failed to send message.');
-        //         }
-        //         document.getElementById('messageInput').value = '';
-        //     })
-        //     .catch(error => console.error('Error sending message:', error));
-        stompClient.send(`/pub/room/${roomId}`, {}, JSON.stringify(message));
-    }
-
-    function show(message) {
-        var response = document.getElementById('messages');
-        var p = document.createElement('p');
-        p.innerHTML = "message: " + message.text;
-        response.appendChild(p);
-    }
-
-</script>
 </body>
 </html>

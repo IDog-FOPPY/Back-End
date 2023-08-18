@@ -51,12 +51,16 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public ChatRoomDTO.Detail getChatRoomDetail(Long roomId) {
         Optional<ChatRoomDTO.Detail> roomDetail = chatRoomRepository.findById(roomId).map(ChatRoomDTO.Detail::of);
-        return roomDetail.orElseThrow(() -> new IllegalStateException("존재하지 않는 채팅방입니다. roomId: " + roomId));
+        return roomDetail.orElseThrow(() -> new IllegalStateException("The chat room does not exist. roomId: " + roomId));
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteChatRoom(Long roomId) {
-        chatRoomRepository.deleteById(roomId);
+        try {
+            chatRoomRepository.deleteById(roomId);
+        } catch (Exception e) {
+            throw new IllegalStateException("The chat room does not exist. roomId: " + roomId);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)

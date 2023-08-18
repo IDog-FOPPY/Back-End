@@ -15,6 +15,8 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 //    private final StompHandler stompHandler;
 
+
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 웹 소켓 연결 endpoint

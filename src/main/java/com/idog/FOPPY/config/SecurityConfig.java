@@ -1,5 +1,7 @@
 package com.idog.FOPPY.config;
 
+import com.idog.FOPPY.config.jwt.JwtFilter;
+import com.idog.FOPPY.config.jwt.JwtProvider;
 import com.idog.FOPPY.service.UserDetailService;
 import com.idog.FOPPY.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +30,9 @@ import org.springframework.web.cors.CorsConfiguration;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    private final JwtProvider jwtProvider;
     private final UserDetailService userDetailService;
     private final PasswordEncoder passwordEncoder;
-
-    @Bean
-    public WebSecurityCustomizer configure() {
-        // 스프링 시큐리티 비활성화
-        return (web) -> web.ignoring()
-                .requestMatchers("/templates/**",
-                        "swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**", "sign-api.html");
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,13 +48,15 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Added line
+                        .requestMatchers("/", "/index.html").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
-//                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/ws/**").permitAll()  // FIXME
-                        .requestMatchers("/**").permitAll()  // FIXME
                 )
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();
