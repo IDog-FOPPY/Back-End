@@ -7,6 +7,8 @@ import com.idog.FOPPY.repository.ChatRoomRepository;
 import com.idog.FOPPY.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +46,15 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatRoomDTO.Response> getChatRoomList(Long memberId) {
-        return chatRoomRepository.findListByMemberId(memberId).stream().map(ChatRoomDTO.Response::of).collect(Collectors.toList());
+    public List<ChatRoomDTO.Response> getChatRoomList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = (String) authentication.getPrincipal();
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalStateException("User ot found with username: " + userEmail));
+
+        List<ChatRoom> chatRooms = chatRoomRepository.findListByMemberId(user.getId());
+        return chatRooms.stream().map(ChatRoomDTO.Response::of).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

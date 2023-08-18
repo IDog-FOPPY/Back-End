@@ -55,9 +55,9 @@ public class ChatController {
 
     @GetMapping("/rooms")
     @Operation(summary = "채팅방 목록 조회")
-    public ResponseEntity<ResponseDTO<List<ChatRoomDTO.Response>>> getChatRoomList(@RequestParam Long memberId) {
+    public ResponseEntity<ResponseDTO<List<ChatRoomDTO.Response>>> getChatRoomList() {
         try {
-            List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList(memberId);
+            List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList();
 
             ResponseDTO<List<ChatRoomDTO.Response>> response = new ResponseDTO<>();
             response.setStatus(true);
