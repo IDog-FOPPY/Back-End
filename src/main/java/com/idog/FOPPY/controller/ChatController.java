@@ -55,9 +55,9 @@ public class ChatController {
 
     @GetMapping("/rooms")
     @Operation(summary = "채팅방 목록 조회")
-    public ResponseEntity<ResponseDTO<List<ChatRoomDTO.Response>>> getChatRoomList(@RequestParam Long memberId) {
+    public ResponseEntity<ResponseDTO<List<ChatRoomDTO.Response>>> getChatRoomList() {
         try {
-            List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList(memberId);
+            List<ChatRoomDTO.Response> chatRooms = chatRoomService.getChatRoomList();
 
             ResponseDTO<List<ChatRoomDTO.Response>> response = new ResponseDTO<>();
             response.setStatus(true);
@@ -101,45 +101,3 @@ public class ChatController {
         }
     }
 }
-
-//    @MessageMapping("/chatroom/{roomId}")
-//    @SendTo("/sub/chatroom/{roomId}")
-//    public ChatMessageDTO message(@DestinationVariable Long roomId, @Payload ChatMessageDTO message) {
-//        chatService.save(ChatMessage.builder()
-//                .chatRoomId(roomId)
-//                .sender(message.getSender())
-//                .message(message.getMessage())
-//                .build());
-//        return message;
-//    }
-
-//    @MessageMapping("/public") // endpoint: /app/public
-//    @SendTo("/topic/messages") // /topic/messages 구독자에게 메시지 전달
-//    public ChatMessageDTO receivePublicMessage(@Payload ChatMessageDTO message) {
-//        return message;
-//    }
-//
-//    @MessageMapping("/private") // endpoint: /app/private
-//    public ChatMessageDTO receivePrivateMessage(@Payload ChatMessageDTO message) {
-//        chatService.save(ChatMessage.builder()
-//                .sender(message.getSender())
-//                .message(message.getMessage())
-//                .build());
-//        template.convertAndSendToUser(message.getReceiver(), "/queue", message); // /user/{username}/queue 구독자에게 메시지 전달
-//        return message;
-//    }
-
-//    //Client가 SEND할 수 있는 경로
-//    //stompConfig에서 설정한 applicationDestinationPrefixes와 @MessageMapping 경로가 병합됨
-//    //"/app/chat/enter"
-//    @MessageMapping("/chat/enter")
-//    public void enter(ChatMessageDTO message){
-//        message.setMessage(message.getSender() + "님이 채팅방에 참여하였습니다.");
-//        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
-//    }
-//
-//    @MessageMapping("/chat/message")
-//    public void message(ChatMessageDTO message){
-//        template.convertAndSend("/queue/chat/room/" + message.getRoomId(), message);
-//    }
-//}
