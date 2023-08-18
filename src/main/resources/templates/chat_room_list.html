@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chat Room List</title>
+</head>
+<body>
+<h1>Chat Room List</h1>
+<ul>
+    <li th:each="chatRoom : ${chatRooms}">
+<!--        <a th:href="@{/chat/room/{roomId}(roomId=${chatRoom.id})}" th:text="${chatRoom.member1NickName},${chatRoom.member2NickName}"></a>-->
+        <a th:href="@{/chat/room/{roomId}(roomId=${chatRoom.id})}" th:text="${chatRoom.member1NickName}"></a>
+    </li>
+</ul>
+</body>
+</html>

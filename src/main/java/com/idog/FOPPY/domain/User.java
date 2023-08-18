@@ -14,12 +14,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +42,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private final List<Dog> dogs = new ArrayList<>();
 
+    @OneToMany
+    private final List<ChatRoom> chatRooms = new ArrayList<>();
+
     @Builder
     public User(String email, String password, String nickName, String phone, String auth) {
         this.email = email;
@@ -55,6 +59,13 @@ public class User implements UserDetails {
         this.dogs.add(dog);
         dog.setUser(this); // Assuming you have a setUser method in Dog entity
         return dog;
+    }
+
+    public ChatRoom addChatRoom(String name, Set<User> chatRoomMembers) {
+        ChatRoom chatRoom = ChatRoom.createChatRoom(name, chatRoomMembers);
+        this.chatRooms.add(chatRoom);
+        chatRoom.setUser(this); // Assuming you have a setUser method in ChatRoom entity
+        return chatRoom;
     }
 
     public void changeNickname(String newNickname) {

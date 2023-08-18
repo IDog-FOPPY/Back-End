@@ -17,8 +17,13 @@ import okhttp3.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +34,12 @@ public class StrayService {
     private final S3Service s3Service;
     private final StrayDogRepository strayDogRepository;
     private final DogRepository dogRepository;
+
+    private WebClient webClient =
+            WebClient
+                    .builder()
+                    .baseUrl("http://210.91.210.243:7860")
+                    .build();
 
     @Transactional
     public Long save(StrayInfoRequest request, List<MultipartFile> multipartFile) {
@@ -53,33 +64,28 @@ public class StrayService {
 
     @Transactional
     public List<FindStrayResponse> findStray(MultipartFile multipartFile) throws Exception {
-        OkHttpClient client = new OkHttpClient();
 
-        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM);
+        Map<String, String> formData = new HashMap<>();
+        formData.put("file", multipartFile.getOriginalFilename());
+
+        Mono<String> responseMono = webClient.post()
+                .uri("/dogIdentification")
+                .body(BodyInserters.fromMultipartData("file", multipartFile))
+                .retrieve()
+                .onStatus(httpStatus -> httpStatus.is4xxClientError(), clientResponse -> Mono.error(new Exception("Client error")))
+                .onStatus(httpStatus -> httpStatus.is5xxServerError(), clientResponse -> Mono.error(new Exception("Server error")))
+                .bodyToMono(String.class);
 
 
-        multipartBodyBuilder.addFormDataPart("file", multipartFile.getOriginalFilename(),
-                RequestBody.create(multipartFile.getBytes(), MediaType.parse(multipartFile.getContentType())));
+        String responseBody = responseMono.block(Duration.ofMinutes(3));
 
-        Request request = new Request.Builder()
-                .url("http://3.38.105.96:8000/dogIdentification")
-                .post(multipartBodyBuilder.build())
-                .build();
-
-        Response response = client.newCall(request).execute();
-
-        String responseBody = response.body().string();
         JsonNode responseJson = new ObjectMapper().readTree(responseBody);
         System.out.println(responseJson.toString());
 
-// Check the status of the response
         if (responseJson.has("status")) {
             int status = responseJson.get("status").asInt();
 
-            // Only process the data if the status is 200
             if (status == 200) {
-
                 JsonNode data = responseJson.get("data");
                 Map<String, Double> filenameSimilarityMap = new HashMap<>();
 
@@ -94,7 +100,6 @@ public class StrayService {
                 }
 
                 Map<Long, FindStrayResponse> responsesMap = new HashMap<>();
-
                 List<Dog> allDogs = dogRepository.findAll();
                 for (Dog dog : allDogs) {
                     for (String filename : dog.getNoseImgUrlList()) {
@@ -106,19 +111,11 @@ public class StrayService {
                 }
 
                 List<FindStrayResponse> responses = new ArrayList<>(responsesMap.values());
-
-                Collections.sort(responses, new Comparator<FindStrayResponse>() {
-                    @Override
-                    public int compare(FindStrayResponse o1, FindStrayResponse o2) {
-                        return Double.compare(o2.getSimilarity(), o1.getSimilarity());
-                    }
-                });
+                responses.sort((o1, o2) -> Double.compare(o2.getSimilarity(), o1.getSimilarity()));
 
                 return responses;
 
-            }
-            else {
-                // If the status is not 200, return the status code in the data
+            } else {
                 throw new Exception(String.valueOf(status));
             }
         } else {
