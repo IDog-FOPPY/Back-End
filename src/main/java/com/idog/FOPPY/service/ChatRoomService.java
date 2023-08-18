@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +48,13 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public List<ChatRoomDTO.Response> getChatRoomList() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = (String)authentication.getPrincipal();
+        String userEmail = (String) authentication.getPrincipal();
 
-        User user = userRepository.findByEmail(userEmail)  // Assuming you have a findByUsername method
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userEmail));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalStateException("User ot found with username: " + userEmail));
 
-        return chatRoomRepository.findListByMemberId(user.getId()).stream().map(ChatRoomDTO.Response::of).collect(Collectors.toList());
+        List<ChatRoom> chatRooms = chatRoomRepository.findListByMemberId(user.getId());
+        return chatRooms.stream().map(ChatRoomDTO.Response::of).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
