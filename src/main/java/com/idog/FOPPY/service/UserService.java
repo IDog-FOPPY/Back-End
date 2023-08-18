@@ -1,12 +1,15 @@
 package com.idog.FOPPY.service;
 
+import com.idog.FOPPY.config.jwt.JwtProvider;
 import com.idog.FOPPY.domain.User;
+import com.idog.FOPPY.exception.AppException;
+import com.idog.FOPPY.exception.ErrorCode;
 import com.idog.FOPPY.dto.user.*;
 import com.idog.FOPPY.repository.UserRepository;
-import com.idog.FOPPY.utils.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,17 +21,21 @@ import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
+    private final JwtProvider jwtProvider;
 
-    @Value("${spring.jwt.secret}")
-    private String secretKey;
+//    @Value("${spring.jwt.secret}")
+//    private String secretKey;
 
-    @Value("${spring.jwt.expire}")
-    private Long expireTimeMs;
+//    @Value("${spring.jwt.expire}")
+//    private Long expireTimeMs;
+    private Long accessExpireTimeMs = 60 * 60 * 1000L;  // 1시간
+    private Long refreshExpireTimeMs = 14 * 24 * 60 * 60 * 1000L;  // 14일
 
     @Value("${spring.mail.username}")
     private String from;
@@ -53,9 +60,18 @@ public class UserService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("password 틀림");
         }
-        String token = JwtUtil.createJwt(user.getUsername(), secretKey, expireTimeMs);
 
-        return new LoginUserResponse(user.getId(), "Bearer " + token);
+        String accessToken = jwtProvider.createAccessToken(user, accessExpireTimeMs);
+        String refreshToken = jwtProvider.createRefreshToken(user, refreshExpireTimeMs);
+
+        return LoginUserResponse.builder()
+                .userId(user.getId())
+                .email(user.getUsername())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .build();
+
     }
 
     public GetUserResponse getOneUser(Long id) {
@@ -158,6 +174,11 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(()-> new IllegalArgumentException("email 존재하지 않음"));
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id를 가진 사용자가 존재하지 않습니다."));
     }
 
     public void deleteAll() {

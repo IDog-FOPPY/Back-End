@@ -1,0 +1,54 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        var socket = new SockJS('/ws/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log(frame);
+            // stompClient.subscribe('/topic/messages', function (result) {
+            stompClient.subscribe('/sub/room/2', function (result) {
+                show(JSON.parse(result.body));
+            });
+        });
+
+        function sendMessage() {
+            var content = document.getElementById('content').value;
+            var senderId = document.getElementById('senderId').value;
+            var receiverId = document.getElementById('receiverId').value;
+            stompClient.send("/pub/send", {},
+                JSON.stringify({'content': content, 'senderId': senderId, 'receiverId': receiverId}));
+        }
+
+        function show(message) {
+            var response = document.getElementById('messages');
+            var p = document.createElement('p');
+            p.innerHTML = "message: " + message.text;
+            response.appendChild(p);
+        }
+    </script>
+</head>
+<body>
+<div>
+    <div>
+        <input type="text" id="senderId" placeholder="senderId"/>
+        <input type="text" id="receiverId" placeholder="receiverId"/>
+        <input type="text" id="content" placeholder="Text"/>
+        <button id="sendMessage" onClick="sendMessage();">Send</button>
+    </div>
+    <br/>
+    <div>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+    <div id="messages"></div>
+
+</div>
+
+</body>
+</html>
