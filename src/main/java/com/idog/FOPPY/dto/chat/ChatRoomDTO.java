@@ -12,6 +12,21 @@ public class ChatRoomDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Request {
+        private Long userId;
+        private Long dogId;
+
+        public ChatRoom toEntity(User member1, User member2) {
+            return ChatRoom.builder()
+                    .member1(member1)
+                    .member2(member2)
+                    .build();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Request2 {
 //        private User member1;
 //        private User member2;
         private Long member1Id;
