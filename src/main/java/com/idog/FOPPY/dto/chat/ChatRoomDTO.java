@@ -50,16 +50,27 @@ public class ChatRoomDTO {
         private Long member2Id;
         private String member1NickName;
         private String member2NickName;
-        private String createdAt;
+        private String member1ProfileImgUrl;
+        private String member2ProfileImgUrl;
+        private String lastMessage;
+        private String lastMessageCreatedAt;
+//        private String createdAt;
 
         public static Response of(ChatRoom chatRoom) {
+            String member1ProfileImgUrl = getProfileImgUrl(chatRoom.getMember1());
+            String member2ProfileImgUrl = getProfileImgUrl(chatRoom.getMember2());
+
             return Response.builder()
                     .id(chatRoom.getId())
                     .member1Id(chatRoom.getMember1().getId())
                     .member2Id(chatRoom.getMember2().getId())
                     .member1NickName(chatRoom.getMember1().getNickName())
                     .member2NickName(chatRoom.getMember2().getNickName())
-                    .createdAt(chatRoom.getCreatedAt().toString())
+                    .member1ProfileImgUrl(member1ProfileImgUrl)
+                    .member2ProfileImgUrl(member2ProfileImgUrl)
+                    .lastMessage(chatRoom.getLastMessageId().getContent())
+                    .lastMessageCreatedAt(chatRoom.getLastMessageId().getCreatedAt().toString())
+//                    .createdAt(chatRoom.getCreatedAt().toString())
                     .build();
         }
     }
@@ -74,23 +85,14 @@ public class ChatRoomDTO {
         private Long member2Id;
         private String member1NickName;
         private String member2NickName;
-        private String member1ProfileImage;
-        private String member2ProfileImage;
+        private String member1ProfileImgUrl;
+        private String member2ProfileImgUrl;
         private String createdAt;
         private List<ChatMessageDTO.Response> chatMessages;
 
         public static Detail of(ChatRoom chatRoom) {
-            String member1ProfileImage, member2ProfileImage;
-            try {
-                member1ProfileImage = chatRoom.getMember1().getDogs().get(0).getImgUrlList().get(0);
-            } catch (Exception e) {
-                member1ProfileImage = "https://기본프사";
-            }
-            try {
-                member2ProfileImage = chatRoom.getMember2().getDogs().get(0).getImgUrlList().get(0);
-            } catch (Exception e) {
-                member2ProfileImage = "https://기본프사";
-            }
+            String member1ProfileImgUrl = getProfileImgUrl(chatRoom.getMember1());
+            String member2ProfileImgUrl = getProfileImgUrl(chatRoom.getMember2());
 
             return Detail.builder()
                     .id(chatRoom.getId())
@@ -98,11 +100,19 @@ public class ChatRoomDTO {
                     .member2Id(chatRoom.getMember2().getId())
                     .member1NickName(chatRoom.getMember1().getNickName())
                     .member2NickName(chatRoom.getMember2().getNickName())
-                    .member1ProfileImage(member1ProfileImage)
-                    .member2ProfileImage(member2ProfileImage)
+                    .member1ProfileImgUrl(member1ProfileImgUrl)
+                    .member2ProfileImgUrl(member2ProfileImgUrl)
                     .createdAt(chatRoom.getCreatedAt().toString())
                     .chatMessages(chatRoom.getChatMessages().stream().map(ChatMessageDTO.Response::of).toList())
                     .build();
+        }
+    }
+
+    private static String getProfileImgUrl(User user) {
+        try {
+            return user.getDogs().get(0).getImgUrlList().get(0);
+        } catch (Exception e) {
+            return "https://기본프사";
         }
     }
 }

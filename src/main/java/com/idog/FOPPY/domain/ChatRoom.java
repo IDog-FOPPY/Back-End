@@ -3,6 +3,7 @@ package com.idog.FOPPY.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,9 @@ public class ChatRoom extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "last_message_id", nullable = true)
-    private ChatMessage lastMessage;
+    private ChatMessage lastMessageId;
+    private String lastMessageContent;
+    private LocalDateTime lastMessageAt;
 
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatMessage> chatMessages = new ArrayList<>();
@@ -79,6 +82,16 @@ public class ChatRoom extends BaseEntity {
             user.getChatRooms().add(this);
         }
     }
+
+    public void updateLastMessage(ChatMessage chatMessage) {
+        this.lastMessageId = chatMessage;
+        this.lastMessageContent = chatMessage.getContent();
+        this.lastMessageAt = chatMessage.getCreatedAt();
+    }
+
+//    public void updateLastMessage(ChatMessage chatMessage, ) {
+//        this.lastMessage = chatMessage;
+//    }
 
 //    public User addChatRoomMembers(User user) {
 //        this.chatRoomMembers.add(user);

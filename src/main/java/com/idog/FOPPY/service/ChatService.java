@@ -35,7 +35,14 @@ public class ChatService {
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 채팅방입니다. senderId: " + chatMessageDto.getSenderId() + ", receiverId: " + chatMessageDto.getReceiverId()));
 
         ChatMessage chatMessage = chatRoom.addChatMessage(chatMessageDto.toEntity(sender, receiver, chatRoom));
-        return chatRepository.save(chatMessage).getId();
+
+        Long chatMessageId = chatRepository.save(chatMessage).getId();
+
+        // lastMessage 업데이트
+        chatRoom.updateLastMessage(chatMessage);
+        chatRoomRepository.save(chatRoom);
+
+        return chatMessageId;
     }
 
 //    @PostConstruct
