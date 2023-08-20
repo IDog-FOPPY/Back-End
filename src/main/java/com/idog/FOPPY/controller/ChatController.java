@@ -12,12 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "chat", description = "채팅 API")
 @RestController
@@ -37,8 +34,25 @@ public class ChatController {
     }
 
     @PostMapping("/room")
-    @Operation(summary = "채팅방 생성")
-    public ResponseEntity<ResponseDTO<Long>> join(@RequestBody ChatRoomDTO.Request request) {
+    @Operation(summary = "채팅방 생성 1 (memberId, dogId)")
+    public ResponseEntity<ResponseDTO<Long>> join2(@RequestBody ChatRoomDTO.Request request) {
+        try {
+            Long roomId = chatRoomService.join2(request);
+
+            ResponseDTO<Long> response = new ResponseDTO<>();
+            response.setStatus(true);
+            response.setMessage("Success");
+            response.setData(roomId);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/room2")
+    @Operation(summary = "채팅방 생성 2 (member1Id, member2Id)")
+    public ResponseEntity<ResponseDTO<Long>> join(@RequestBody ChatRoomDTO.Request2 request) {
         try {
             Long roomId = chatRoomService.join(request);
 
