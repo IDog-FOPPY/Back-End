@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Tag(name = "dog", description = "개 API")
@@ -45,13 +47,20 @@ public class DogController {
 
     @PatchMapping("/{dogId}")
     @Operation(summary = "강아지 정보 수정")
-    public ResponseEntity<ResponseDTO<Long>> update(@PathVariable Long dogId, @RequestBody DogInfoRequest request) {
-        Long setDogId = dogService.update(dogId, request);
+    public ResponseEntity<ResponseDTO<List<String>>> update(@PathVariable Long dogId, @RequestPart DogInfoRequest request,
+                                                    @RequestPart("file") List<MultipartFile> multipartFile) throws IOException {
+        Long setDogId = dogService.update(dogId, request, multipartFile);
+        List<String> fileResponseList = new ArrayList<>();
 
-        ResponseDTO<Long> response = new ResponseDTO<>();
+        for (MultipartFile file : multipartFile) {
+            String base64Encoded = Base64.getEncoder().encodeToString(file.getBytes());
+            fileResponseList.add(base64Encoded);
+        }
+
+        ResponseDTO<List<String>> response = new ResponseDTO<>();
         response.setStatus(true);
         response.setMessage("Dog info change successful.");
-        response.setData(setDogId);
+        response.setData(fileResponseList);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);

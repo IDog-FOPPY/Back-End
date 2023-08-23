@@ -76,7 +76,7 @@ public class Dog {
         return dog;
     }
 
-    public void update(DogInfoRequest request) {
+    public void update(DogInfoRequest request, List<String> imgUrlList) {
         this.name = request.getName();
         this.birth = request.getBirth();
         this.sex = request.getSex();
@@ -92,7 +92,7 @@ public class Dog {
         this.missDate = request.getMissDate();
         this.missTime = request.getMissTime();
         this.etc = request.getEtc();
-
+        this.imgUrlList = imgUrlList;
     }
 
 
