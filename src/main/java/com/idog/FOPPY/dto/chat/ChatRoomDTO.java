@@ -59,6 +59,8 @@ public class ChatRoomDTO {
         public static Response of(ChatRoom chatRoom) {
             String member1ProfileImgUrl = getProfileImgUrl(chatRoom.getMember1());
             String member2ProfileImgUrl = getProfileImgUrl(chatRoom.getMember2());
+            String lastMessage = chatRoom.getLastMessageId() == null ? "채팅을 시작해보세요!" : chatRoom.getLastMessageId().getContent();
+            String lastMessageCreatedAt = chatRoom.getLastMessageId() == null ? "" : chatRoom.getLastMessageId().getCreatedAt().toString();
 
             return Response.builder()
                     .id(chatRoom.getId())
@@ -68,9 +70,8 @@ public class ChatRoomDTO {
                     .member2NickName(chatRoom.getMember2().getNickName())
                     .member1ProfileImgUrl(member1ProfileImgUrl)
                     .member2ProfileImgUrl(member2ProfileImgUrl)
-                    .lastMessage(chatRoom.getLastMessageId().getContent())
-                    .lastMessageCreatedAt(chatRoom.getLastMessageId().getCreatedAt().toString())
-//                    .createdAt(chatRoom.getCreatedAt().toString())
+                    .lastMessage(lastMessage)
+                    .lastMessageCreatedAt(lastMessageCreatedAt)
                     .build();
         }
     }
