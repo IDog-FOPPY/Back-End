@@ -15,12 +15,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -38,7 +39,7 @@ public class StrayService {
     private WebClient webClient =
             WebClient
                     .builder()
-                    .baseUrl("http://210.91.210.243:7860")
+                    .baseUrl("http://43.202.57.167:8000")
                     .build();
 
     @Transactional
@@ -65,16 +66,22 @@ public class StrayService {
     @Transactional
     public List<FindStrayResponse> findStray(MultipartFile multipartFile) throws Exception {
 
-        Map<String, String> formData = new HashMap<>();
-        formData.put("file", multipartFile.getOriginalFilename());
+        ByteArrayResource fileResource = new ByteArrayResource(multipartFile.getBytes()) {
+            @Override
+            public String getFilename() {
+                return multipartFile.getOriginalFilename();
+            }
+        };
 
         Mono<String> responseMono = webClient.post()
                 .uri("/dogIdentification")
-                .body(BodyInserters.fromMultipartData("file", multipartFile))
+                .contentType(MediaType.MULTIPART_FORM_DATA) // 추가된 contentType 설정
+                .body(BodyInserters.fromMultipartData("file", fileResource)) // 수정된 부분
                 .retrieve()
                 .onStatus(httpStatus -> httpStatus.is4xxClientError(), clientResponse -> Mono.error(new Exception("Client error")))
                 .onStatus(httpStatus -> httpStatus.is5xxServerError(), clientResponse -> Mono.error(new Exception("Server error")))
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .timeout(Duration.ofMinutes(5));
 
 
         String responseBody = responseMono.block(Duration.ofMinutes(3));

@@ -64,7 +64,7 @@ public class DogService {
 
 // Build the Request
         Request request = new Request.Builder()
-                .url("http://3.38.105.96:8000/noseDetect") // Replace with your FastAPI URL
+                .url("http://43.202.57.167:8000/noseDetect") // Replace with your FastAPI URL
                 .post(multipartBodyBuilder.build())
                 .build();
 
@@ -100,10 +100,14 @@ public class DogService {
     }
 
     @Transactional
-    public Long update(Long dogId, DogInfoRequest request) {
+    public Long update(Long dogId, DogInfoRequest request, List<MultipartFile> multipartFile) {
+
+        List<String> imgUrlList = s3Service.upload(multipartFile, "/dog");
+
         Dog dog = dogRepository.findById(dogId)
                 .orElseThrow(() -> new UsernameNotFoundException("Dog not found with id: " + dogId));
-        dog.update(request);
+        dog.update(request, imgUrlList);
+
         dogRepository.save(dog);
 
         return dog.getId();
