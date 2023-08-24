@@ -4,13 +4,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
     <script type="text/javascript">
         var stompClient = null;
+        var accessToken = 'token...blahblahblah...'
 
         var socket = new SockJS('/ws/chat');
         stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
+        stompClient.connect({'Authorization': 'Bearer ' + accessToken}, function (frame) {
             console.log(frame);
             // stompClient.subscribe('/topic/messages', function (result) {
-            stompClient.subscribe('/sub/room/2', function (result) {
+            stompClient.subscribe('/sub/room/15', function (result) {
                 show(JSON.parse(result.body));
             });
         });
