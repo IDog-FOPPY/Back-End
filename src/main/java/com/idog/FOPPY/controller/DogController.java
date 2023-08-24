@@ -49,7 +49,7 @@ public class DogController {
     @Operation(summary = "강아지 정보 수정")
     public ResponseEntity<ResponseDTO<List<String>>> update(@PathVariable Long dogId, @RequestPart DogInfoRequest request,
                                                     @RequestPart("file") List<MultipartFile> multipartFile) throws IOException {
-        Long setDogId = dogService.update(dogId, request, multipartFile);
+        dogService.update(dogId, request, multipartFile);
         List<String> fileResponseList = new ArrayList<>();
 
         for (MultipartFile file : multipartFile) {
