@@ -37,7 +37,8 @@ public class ChatRoomService {
         if (requestDto.getMember2Id().equals(requestDto.getMember1Id())) {
             throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2);
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2)
+                .or(() -> chatRoomRepository.findByMembers(member2, member1));
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             return chatRoom.get().getId();
         } else {
@@ -61,7 +62,8 @@ public class ChatRoomService {
         if (requestDto.getUserId().equals(strayDogMember.getId())) {
             throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member, strayDogMember);
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member, strayDogMember)
+                .or(() -> chatRoomRepository.findByMembers(strayDogMember, member));
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             return chatRoom.get().getId();
         } else {
