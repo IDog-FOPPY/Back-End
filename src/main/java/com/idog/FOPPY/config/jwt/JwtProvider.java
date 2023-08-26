@@ -28,7 +28,7 @@ public class JwtProvider {
 
     // Access Token 생성
     public String createAccessToken(User user, Long expireTimeMs) {
-        LOGGER.info("[createToken] 토큰 생성 시작");
+//        LOGGER.info("[createToken] 토큰 생성 시작");
         Claims claims = Jwts.claims();
         claims.put("username", user.getUsername());
         Date now = new Date();
@@ -45,13 +45,13 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)
                 .compact();
 
-        LOGGER.info("[createToken] 토큰 생성 완료");
+//        LOGGER.info("[createToken] 토큰 생성 완료");
         return token;
     }
 
     // Access Token 생성
     public String createRefreshToken(User user, Long expireTimeMs) {
-        LOGGER.info("[createRefreshToken] 토큰 생성 시작");
+//        LOGGER.info("[createRefreshToken] 토큰 생성 시작");
         Claims claims = Jwts.claims();
         claims.put("username", user.getUsername());
         Date now = new Date();
@@ -68,7 +68,7 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
                 .compact();
 
-        LOGGER.info("[createRefreshToken] 토큰 생성 완료");
+//        LOGGER.info("[createRefreshToken] 토큰 생성 완료");
         return token;
     }
 
