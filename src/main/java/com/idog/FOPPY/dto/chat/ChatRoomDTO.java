@@ -80,6 +80,16 @@ public class ChatRoomDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class JoinResponse {
+        private Long roomId;
+        private Long senderId;
+        private Long receiverId;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class Detail {
         private Long id;
         private Long member1Id;
