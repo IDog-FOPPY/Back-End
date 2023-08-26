@@ -36,9 +36,9 @@ public class ChatController {
 
     @PostMapping("/room")
     @Operation(summary = "채팅방 생성 1 (memberId, dogId)")
-    public ResponseEntity<ResponseDTO<Long>> join2(@RequestBody ChatRoomDTO.Request request) {
+    public ResponseEntity<ResponseDTO<Long>> join1(@RequestBody ChatRoomDTO.Request request) {
         try {
-            Long roomId = chatRoomService.join2(request);
+            Long roomId = chatRoomService.join1(request);
 
             ResponseDTO<Long> response = new ResponseDTO<>();
             response.setStatus(true);
@@ -53,9 +53,9 @@ public class ChatController {
 
     @PostMapping("/room2")
     @Operation(summary = "채팅방 생성 2 (member1Id, member2Id)")
-    public ResponseEntity<ResponseDTO<Long>> join(@RequestBody ChatRoomDTO.Request2 request) {
+    public ResponseEntity<ResponseDTO<Long>> join2(@RequestBody ChatRoomDTO.Request2 request) {
         try {
-            Long roomId = chatRoomService.join(request);
+            Long roomId = chatRoomService.join2(request);
 
             ResponseDTO<Long> response = new ResponseDTO<>();
             response.setStatus(true);
