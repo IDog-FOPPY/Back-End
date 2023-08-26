@@ -16,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
+
+    private final Logger LOGGER = Logger.getLogger(ChatRoomService.class.getName());
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
@@ -38,8 +41,7 @@ public class ChatRoomService {
         if (requestDto.getUserId().equals(strayDogMember.getId())) {
             throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member, strayDogMember)
-                .or(() -> chatRoomRepository.findByMembers(strayDogMember, member));
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member, strayDogMember);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             return chatRoom.get().getId();
         } else {
@@ -58,8 +60,7 @@ public class ChatRoomService {
         if (requestDto.getMember2Id().equals(requestDto.getMember1Id())) {
             throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2)
-                .or(() -> chatRoomRepository.findByMembers(member2, member1));
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             return chatRoom.get().getId();
         } else {

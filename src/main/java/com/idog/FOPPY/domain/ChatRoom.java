@@ -48,12 +48,6 @@ public class ChatRoom extends BaseEntity {
     )
     private Set<User> chatRoomMembers = new HashSet<>();
 
-//    @Builder
-//    public ChatRoom(String name, Set<User> chatRoomMembers) {
-//        this.name = name;
-//        this.chatRoomMembers = chatRoomMembers;
-//    }
-
     public static ChatRoom createChatRoom(String chatRoomName, Set<User> chatRoomMembers) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.name = chatRoomName;
@@ -88,16 +82,4 @@ public class ChatRoom extends BaseEntity {
         this.lastMessageContent = chatMessage.getContent();
         this.lastMessageAt = chatMessage.getCreatedAt();
     }
-
-//    public void updateLastMessage(ChatMessage chatMessage, ) {
-//        this.lastMessage = chatMessage;
-//    }
-
-//    public User addChatRoomMembers(User user) {
-//        this.chatRoomMembers.add(user);
-//        if(!user.getChatRooms().contains(this)) {
-//            user.getChatRooms().add(this);
-//        }
-//        return user;
-//    }
 }
