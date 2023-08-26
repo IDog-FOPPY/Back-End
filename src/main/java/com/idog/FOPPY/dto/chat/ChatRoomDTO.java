@@ -11,7 +11,7 @@ public class ChatRoomDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Request {
+    public static class JoinRequest1 {
         private Long userId;
         private Long dogId;
 
@@ -26,9 +26,7 @@ public class ChatRoomDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Request2 {
-//        private User member1;
-//        private User member2;
+    public static class JoinRequest2 {
         private Long member1Id;
         private Long member2Id;
 
@@ -36,6 +34,24 @@ public class ChatRoomDTO {
             return ChatRoom.builder()
                     .member1(member1)
                     .member2(member2)
+                    .build();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class JoinResponse {
+        private Long roomId;
+        private Long senderId;
+        private Long receiverId;
+
+        public static JoinResponse of(ChatRoom chatRoom) {
+            return JoinResponse.builder()
+                    .roomId(chatRoom.getId())
+                    .senderId(chatRoom.getMember1().getId())
+                    .receiverId(chatRoom.getMember2().getId())
                     .build();
         }
     }
@@ -74,16 +90,6 @@ public class ChatRoomDTO {
                     .lastMessageCreatedAt(lastMessageCreatedAt)
                     .build();
         }
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class JoinResponse {
-        private Long roomId;
-        private Long senderId;
-        private Long receiverId;
     }
 
     @Getter

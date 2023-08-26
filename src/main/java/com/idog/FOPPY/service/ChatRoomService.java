@@ -16,14 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
-
-    private final Logger LOGGER = Logger.getLogger(ChatRoomService.class.getName());
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
@@ -31,7 +28,11 @@ public class ChatRoomService {
 
     // userId, dogId로 채팅방 생성
     @Transactional(rollbackFor = Exception.class)
-    public Long join1(ChatRoomDTO.Request requestDto) throws IllegalStateException {
+    public ChatRoomDTO.JoinResponse join1(ChatRoomDTO.JoinRequest1 requestDto) throws IllegalStateException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long userId = userRepository.findByEmail(email).get().getId();
+
         User member = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getUserId()));
         Dog dog = dogRepository.findById(requestDto.getDogId())
@@ -43,15 +44,20 @@ public class ChatRoomService {
         }
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member, strayDogMember);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
-            return chatRoom.get().getId();
+            return ChatRoomDTO.JoinResponse.of(chatRoom.get());
         } else {
-            return chatRoomRepository.save(requestDto.toEntity(member, strayDogMember));
+            Long roomId = chatRoomRepository.save(requestDto.toEntity(member, strayDogMember));
+            return ChatRoomDTO.JoinResponse.of(chatRoomRepository.findById(roomId).get());
         }
     }
 
     // userId, userId로 채팅방 생성
     @Transactional(rollbackFor = Exception.class)
-    public Long join2(ChatRoomDTO.Request2 requestDto) throws IllegalStateException {
+    public ChatRoomDTO.JoinResponse join2(ChatRoomDTO.JoinRequest2 requestDto) throws IllegalStateException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long userId = userRepository.findByEmail(email).get().getId();
+
         User member1 = userRepository.findById(requestDto.getMember1Id())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMember1Id()));
         User member2 = userRepository.findById(requestDto.getMember2Id())
@@ -62,13 +68,10 @@ public class ChatRoomService {
         }
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
-            return chatRoom.get().getId();
+            return ChatRoomDTO.JoinResponse.of(chatRoom.get());
         } else {
-            return chatRoomRepository.save(requestDto.toEntity(member1, member2));
-//            return chatRoomRepository.save(ChatRoom.builder()
-//                    .member1(request.getMember1())
-//                    .member2(request.getMember2())
-//                    .build());
+            Long roomId = chatRoomRepository.save(requestDto.toEntity(member1, member2));
+            return ChatRoomDTO.JoinResponse.of(chatRoomRepository.findById(roomId).get());
         }
     }
 
