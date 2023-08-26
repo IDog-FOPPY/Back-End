@@ -23,6 +23,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.Arrays;
+
 @Configuration
 @Slf4j
 @EnableWebSecurity
@@ -44,8 +46,11 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-                    configuration.addAllowedMethod(HttpMethod.PATCH);
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 Origin 설정
+                    configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS")); // 허용할 HTTP 메서드 설정
+                    configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더 설정
+                    configuration.setAllowCredentials(true); // credentials 허용 설정
                     return configuration;
                 })).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
