@@ -14,28 +14,3 @@ public interface ChatRoomRepository {
     Optional<ChatRoom> findById(Long roomId);
     void deleteById(Long roomId);
 }
-
-//    private Map<String, ChatRoomDTO> chatRoomDTOMap;
-//
-//    @PostConstruct
-//    private void init() {
-//        chatRoomDTOMap = new LinkedHashMap<>();
-//    }
-//
-//    public List<ChatRoomDTO> findAllRoom() {
-//        // 채팅방 최근 생성된 순으로 반환
-//        List<ChatRoomDTO> result = new ArrayList<>(chatRoomDTOMap.values());
-//        Collections.reverse(result);
-//        return result;
-//    }
-//
-//    public ChatRoomDTO findRoomById(String id) {
-//        return chatRoomDTOMap.get(id);
-//    }
-//
-//    public ChatRoomDTO createChatRoom(String name) {
-//        ChatRoomDTO chatRoomDTO = ChatRoomDTO.create(name);
-//        chatRoomDTOMap.put(chatRoomDTO.getRoomId(), chatRoomDTO);
-//        return chatRoomDTO;
-//    }
-//}
