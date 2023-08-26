@@ -89,11 +89,6 @@ public class JwtProvider {
     public Authentication getAuthentication(String token) {
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
-//        return new UsernamePasswordAuthenticationToken(
-//                new org.springframework.security.core.userdetails.User(getUsername(token), "", authorities),
-//                token,
-//                authorities
-//        );
         return new UsernamePasswordAuthenticationToken(
                 getUsername(token),
                 token,
