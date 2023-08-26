@@ -30,7 +30,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 
     @Override
     public Optional<ChatRoom> findByMembers(User member1, User member2) {
-        List<ChatRoom> result = em.createQuery("select c from ChatRoom c where c.member1 = :member1 and c.member2 = :member2", ChatRoom.class)
+        List<ChatRoom> result = em.createQuery("select c from ChatRoom c where (c.member1 = :member1 and c.member2 = :member2) or (c.member1 = :member2 and c.member2 = :member1)", ChatRoom.class)
                 .setParameter("member1", member1)
                 .setParameter("member2", member2)
                 .getResultList();
