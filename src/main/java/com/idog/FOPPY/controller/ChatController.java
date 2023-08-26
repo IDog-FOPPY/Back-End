@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @Tag(name = "chat", description = "채팅 API")
 @RestController
 @RequestMapping("/api/chat")
