@@ -5,9 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Builder
 @Getter
@@ -40,23 +38,14 @@ public class ChatRoom extends BaseEntity {
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "chat_room_member",
-            joinColumns = @JoinColumn(name = "chat_room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> chatRoomMembers = new HashSet<>();
+    @OneToMany(mappedBy = "chatRoom")
+    private final List<ChatRoomMember> members = new ArrayList<>();
 
-    public static ChatRoom createChatRoom(String chatRoomName, Set<User> chatRoomMembers) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.name = chatRoomName;
-        chatRoom.chatRoomMembers = chatRoomMembers;
-        return chatRoom;
-    }
-
-    public void updateChatRoomName(String chatRoomName) {
-        this.name = chatRoomName;
+    public void addMember(ChatRoomMember chatRoomMember) {
+        this.members.add(chatRoomMember);
+        if (chatRoomMember.getChatRoom() != this) {
+            chatRoomMember.setChatRoom(this);
+        }
     }
 
     public ChatMessage addChatMessage(ChatMessage chatMessage) {
@@ -67,19 +56,13 @@ public class ChatRoom extends BaseEntity {
         return chatMessage;
     }
 
-    public void setUser(User user) {
-        if(this.member1 != null) {
-            this.member1.getChatRooms().remove(this);
-        }
-        this.chatRoomMembers.add(user);
-        if(!user.getChatRooms().contains(this)) {
-            user.getChatRooms().add(this);
-        }
-    }
-
     public void updateLastMessage(ChatMessage chatMessage) {
         this.lastMessageId = chatMessage;
         this.lastMessageContent = chatMessage.getContent();
         this.lastMessageAt = chatMessage.getCreatedAt();
+    }
+
+    public void updateChatRoomName(String chatRoomName) {
+        this.name = chatRoomName;
     }
 }
