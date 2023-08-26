@@ -1,6 +1,7 @@
 package com.idog.FOPPY.service;
 
 import com.idog.FOPPY.domain.ChatRoom;
+import com.idog.FOPPY.domain.ChatRoomMember;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
 import com.idog.FOPPY.dto.chat.ChatRoomDTO;
@@ -47,6 +48,23 @@ public class ChatRoomService {
             return ChatRoomDTO.JoinResponse.of(chatRoom.get());
         } else {
             Long roomId = chatRoomRepository.save(requestDto.toEntity(member, strayDogMember));
+            ChatRoom room = chatRoomRepository.findById(roomId).get();
+
+            ChatRoomMember chatRoomMember = new ChatRoomMember();
+            ChatRoomMember chatRoomMember2 = new ChatRoomMember();
+
+            chatRoomMember.setChatRoom(room);
+            chatRoomMember2.setChatRoom(room);
+
+            chatRoomMember.setUser(member);
+            chatRoomMember2.setUser(strayDogMember);
+
+            member.addChatRoom(chatRoomMember);
+            strayDogMember.addChatRoom(chatRoomMember2);
+
+            userRepository.save(member);
+            userRepository.save(strayDogMember);
+
             return ChatRoomDTO.JoinResponse.of(chatRoomRepository.findById(roomId).get());
         }
     }
@@ -71,6 +89,23 @@ public class ChatRoomService {
             return ChatRoomDTO.JoinResponse.of(chatRoom.get());
         } else {
             Long roomId = chatRoomRepository.save(requestDto.toEntity(member1, member2));
+            ChatRoom room = chatRoomRepository.findById(roomId).get();
+
+            ChatRoomMember chatRoomMember1 = new ChatRoomMember();
+            ChatRoomMember chatRoomMember2 = new ChatRoomMember();
+
+            chatRoomMember1.setChatRoom(room);
+            chatRoomMember2.setChatRoom(room);
+
+            chatRoomMember1.setUser(member1);
+            chatRoomMember2.setUser(member2);
+
+            member1.addChatRoom(chatRoomMember1);
+            member2.addChatRoom(chatRoomMember2);
+
+            userRepository.save(member1);
+            userRepository.save(member2);
+
             return ChatRoomDTO.JoinResponse.of(chatRoomRepository.findById(roomId).get());
         }
     }

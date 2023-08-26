@@ -1,6 +1,5 @@
 package com.idog.FOPPY.domain;
 
-import com.idog.FOPPY.dto.dog.DogInfoRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,8 +40,8 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user")
     private final List<Dog> dogs = new ArrayList<>();
 
-    @OneToMany
-    private final List<ChatRoom> chatRooms = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private final List<ChatRoomMember> chatRooms = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String nickName, String phone, String auth) {
@@ -61,11 +59,11 @@ public class User extends BaseEntity implements UserDetails {
         return dog;
     }
 
-    public ChatRoom addChatRoom(String name, Set<User> chatRoomMembers) {
-        ChatRoom chatRoom = ChatRoom.createChatRoom(name, chatRoomMembers);
-        this.chatRooms.add(chatRoom);
-        chatRoom.setUser(this); // Assuming you have a setUser method in ChatRoom entity
-        return chatRoom;
+    public void addChatRoom(ChatRoomMember chatRoomMember) {
+        this.chatRooms.add(chatRoomMember);
+        if (chatRoomMember.getUser() != this) {
+            chatRoomMember.setUser(this);
+        }
     }
 
     public void changeNickname(String newNickname) {
