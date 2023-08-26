@@ -2,6 +2,7 @@ package com.idog.FOPPY.controller;
 
 import com.idog.FOPPY.dto.ResponseDTO;
 import com.idog.FOPPY.dto.chat.*;
+import com.idog.FOPPY.repository.DogRepository;
 import com.idog.FOPPY.service.ChatRoomService;
 import com.idog.FOPPY.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ public class ChatController {
     private final SimpMessagingTemplate template;
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
+    private final DogRepository dogRepository;
 
     @MessageMapping("/send")
     public void send(@Payload ChatMessageDTO.Send message) {
@@ -36,14 +38,16 @@ public class ChatController {
 
     @PostMapping("/room")
     @Operation(summary = "채팅방 생성 1 (memberId, dogId)")
-    public ResponseEntity<ResponseDTO<Long>> join1(@RequestBody ChatRoomDTO.Request request) {
+    public ResponseEntity<ResponseDTO<ChatRoomDTO.JoinResponse>> join1(@RequestBody ChatRoomDTO.Request request) {
         try {
             Long roomId = chatRoomService.join1(request);
+            Long senderId = request.getUserId();
+            Long receiverId = dogRepository.findById(request.getDogId()).orElseThrow().getUser().getId();
 
-            ResponseDTO<Long> response = new ResponseDTO<>();
+            ResponseDTO<ChatRoomDTO.JoinResponse> response = new ResponseDTO<>();
             response.setStatus(true);
             response.setMessage("Success");
-            response.setData(roomId);
+            response.setData(new ChatRoomDTO.JoinResponse(roomId, senderId, receiverId));
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
@@ -53,14 +57,16 @@ public class ChatController {
 
     @PostMapping("/room2")
     @Operation(summary = "채팅방 생성 2 (member1Id, member2Id)")
-    public ResponseEntity<ResponseDTO<Long>> join2(@RequestBody ChatRoomDTO.Request2 request) {
+    public ResponseEntity<ResponseDTO<ChatRoomDTO.JoinResponse>> join2(@RequestBody ChatRoomDTO.Request2 request) {
         try {
             Long roomId = chatRoomService.join2(request);
+            Long senderId = request.getMember1Id();
+            Long receiverId = request.getMember2Id();
 
-            ResponseDTO<Long> response = new ResponseDTO<>();
+            ResponseDTO<ChatRoomDTO.JoinResponse> response = new ResponseDTO<>();
             response.setStatus(true);
             response.setMessage("Success");
-            response.setData(roomId);
+            response.setData(new ChatRoomDTO.JoinResponse(roomId, senderId, receiverId));
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
