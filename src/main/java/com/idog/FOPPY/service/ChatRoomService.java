@@ -143,7 +143,7 @@ public class ChatRoomService {
                 .orElseThrow(() -> new IllegalStateException("User ot found with username: " + userEmail));
 
         Optional<List<ChatRoom>> chatRooms = chatRoomMemberRepository.findAllChatRoomByUserId(user.getId());
-        return chatRooms.get().stream().map(chatRoom -> ChatRoomDTO.Response.of(chatRoom)).collect(Collectors.toList());
+        return chatRooms.orElseGet(ArrayList::new).stream().map(chatRoom -> ChatRoomDTO.Response.of(chatRoom)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
