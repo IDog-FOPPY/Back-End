@@ -1,14 +1,9 @@
 package com.idog.FOPPY.service;
 
-import com.idog.FOPPY.domain.ChatRoom;
-import com.idog.FOPPY.domain.ChatRoomMember;
-import com.idog.FOPPY.domain.Dog;
-import com.idog.FOPPY.domain.User;
+import com.idog.FOPPY.domain.*;
+import com.idog.FOPPY.dto.chat.ChatMessageDTO;
 import com.idog.FOPPY.dto.chat.ChatRoomDTO;
-import com.idog.FOPPY.repository.ChatRoomMemberRepository;
-import com.idog.FOPPY.repository.ChatRoomRepository;
-import com.idog.FOPPY.repository.DogRepository;
-import com.idog.FOPPY.repository.UserRepository;
+import com.idog.FOPPY.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +24,7 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
 
@@ -152,8 +148,15 @@ public class ChatRoomService {
 
     @Transactional(readOnly = true)
     public ChatRoomDTO.Detail getChatRoomDetail(Long roomId) {
-        Optional<ChatRoomDTO.Detail> roomDetail = chatRoomRepository.findById(roomId).map(ChatRoomDTO.Detail::of);
-        return roomDetail.orElseThrow(() -> new IllegalStateException("The chat room does not exist. roomId: " + roomId));
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        if (chatRoom.isPresent()) {
+            ChatRoomDTO.Detail chatRoomDetail = ChatRoomDTO.Detail.of(chatRoom.get());
+            List<ChatMessageDTO.Response> chatMessages = chatMessageRepository.findAllByChatRoomId(roomId).stream().map(chatMessage -> ChatMessageDTO.Response.of(chatMessage)).collect(Collectors.toList());
+            chatRoomDetail.setChatMessages(chatMessages);
+            return chatRoomDetail;
+        } else {
+            throw new IllegalStateException("The chat room does not exist. roomId: " + roomId);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)

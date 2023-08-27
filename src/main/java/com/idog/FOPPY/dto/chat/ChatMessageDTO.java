@@ -5,8 +5,6 @@ import com.idog.FOPPY.domain.ChatRoom;
 import com.idog.FOPPY.domain.User;
 import lombok.*;
 
-import java.util.List;
-
 
 public class ChatMessageDTO {
 
@@ -36,8 +34,8 @@ public class ChatMessageDTO {
         private Long messageId;
         private String content;
         private Long roomId;
-        private ChatRoomDTO.MemberResponse sender;
-        private List<ChatRoomDTO.MemberResponse> receivers;
+        private Long senderId;
+//        private List<ChatRoomDTO.MemberResponse> receivers;
         private String createdAt;
 
         public static Response of(ChatMessage chatMessage) {
@@ -45,6 +43,7 @@ public class ChatMessageDTO {
                     .messageId(chatMessage.getId())
                     .content(chatMessage.getContent())
                     .roomId(chatMessage.getChatRoom().getId())
+                    .senderId(chatMessage.getSender().getId())
                     .createdAt(chatMessage.getCreatedAt().toString())
                     .build();
         }

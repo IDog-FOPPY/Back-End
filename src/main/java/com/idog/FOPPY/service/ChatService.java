@@ -2,11 +2,9 @@ package com.idog.FOPPY.service;
 
 import com.idog.FOPPY.domain.ChatMessage;
 import com.idog.FOPPY.domain.ChatRoom;
-import com.idog.FOPPY.domain.ChatRoomMember;
 import com.idog.FOPPY.domain.User;
 import com.idog.FOPPY.dto.chat.ChatMessageDTO;
 import com.idog.FOPPY.dto.chat.ChatRoomDTO;
-import com.idog.FOPPY.repository.ChatRepository;
 import com.idog.FOPPY.repository.ChatRoomRepository;
 import com.idog.FOPPY.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatService {
+
+    private final Logger LOGGER = Logger.getLogger(ChatService.class.getName());
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
@@ -38,6 +37,9 @@ public class ChatService {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatMessageDto.getRoomId())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 채팅방입니다. chatRoomId: " + chatMessageDto.getRoomId()));
+//        List<Long> allMemberIds = chatRoom.getMembers().stream()
+//                .map(chatRoomMember -> chatRoomMember.getUser().getId())
+//                .collect(Collectors.toList());
 
         ChatMessage chatMessage = chatRoom.addChatMessage(chatMessageDto.toEntity(currentUser, chatRoom));
 
@@ -46,13 +48,13 @@ public class ChatService {
         chatRoomRepository.save(chatRoom);
 
         ChatMessageDTO.Response response = ChatMessageDTO.Response.of(chatMessage);
-        response.setSender(ChatRoomDTO.MemberResponse.of(currentUser));
-        List<ChatRoomMember> chatRoomMembers = chatRoom.getMembers();
-        List<ChatRoomDTO.MemberResponse> receivers = chatRoomMembers.stream()
-                .filter(chatRoomMember -> !chatRoomMember.getUser().getId().equals(currentUser.getId()))
-                .map(chatRoomMember -> ChatRoomDTO.MemberResponse.of(chatRoomMember.getUser()))
-                .collect(Collectors.toList());
-        response.setReceivers(receivers);
+//        response.setSenderId(ChatRoomDTO.MemberResponse.of(currentUser));
+//        List<ChatRoomMember> chatRoomMembers = chatRoom.getMembers();
+//        List<ChatRoomDTO.MemberResponse> receivers = chatRoomMembers.stream()
+//                .filter(chatRoomMember -> !chatRoomMember.getUser().getId().equals(currentUser.getId()))
+//                .map(chatRoomMember -> ChatRoomDTO.MemberResponse.of(chatRoomMember.getUser()))
+//                .collect(Collectors.toList());
+//        response.setReceivers(receivers);
 
         return response;
     }

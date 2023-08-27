@@ -111,6 +111,7 @@ public class ChatRoomDTO {
         }
     }
 
+    @Setter
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -134,7 +135,7 @@ public class ChatRoomDTO {
                     .id(chatRoom.getId())
                     .members(members)
                     .createdAt(chatRoom.getCreatedAt().toString())
-                    .chatMessages(chatRoom.getChatMessages().stream().map(ChatMessageDTO.Response::of).toList())
+//                    .chatMessages(chatRoom.getChatMessages().stream().map(ChatMessageDTO.Response::of).toList())
                     .build();
         }
     }
