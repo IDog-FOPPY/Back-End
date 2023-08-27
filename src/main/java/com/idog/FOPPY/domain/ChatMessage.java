@@ -16,24 +16,19 @@ public class ChatMessage extends BaseEntity {
     private Long id;
     private String content;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="sender_id", updatable = false)
     private User sender;
-
-    @ManyToOne
-    @JoinColumn(name="receiver_id", updatable = false)
-    private User receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="chat_room_id", updatable = false)
     private ChatRoom chatRoom;  // 얘를 통해 recevierId를 알 수 있음
 
     @Builder
-    public ChatMessage(String content, ChatRoom chatRoom, User sender, User receiver) {
+    public ChatMessage(String content, ChatRoom chatRoom, User sender) {
         this.content = content;
         this.chatRoom = chatRoom;
         this.sender = sender;
-        this.receiver = receiver;
     }
 
     public void setChatRoom(ChatRoom chatRoom) {
