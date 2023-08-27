@@ -5,10 +5,9 @@ import com.idog.FOPPY.domain.ChatRoom;
 import com.idog.FOPPY.domain.User;
 import lombok.*;
 
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@ToString
+import java.util.List;
+
+
 public class ChatMessageDTO {
 
     @Getter
@@ -17,50 +16,37 @@ public class ChatMessageDTO {
 //            JOIN, CHAT, LEAVE
 //        }
         private String content;
-//        private User sender;
-//        private User receiver;
-//        private ChatRoom chatRoom;
-        private Long senderId;
-        private Long receiverId;
         private Long roomId;
 //        private MessageType messageType;
 
-        public ChatMessage toEntity(User sender, User receiver, ChatRoom chatRoom) {
+        public ChatMessage toEntity(User sender, ChatRoom chatRoom) {
             return ChatMessage.builder()
                     .content(content)
                     .sender(sender)
-                    .receiver(receiver)
                     .chatRoom(chatRoom)
                     .build();
         }
     }
 
+    @Setter
     @Getter
     @AllArgsConstructor
     @Builder
     public static class Response {
-        private Long id;
+        private Long messageId;
         private String content;
-        private Long senderId;
-        private Long receiverId;
         private Long roomId;
-        private String senderNickName;
-        private String receiverNickName;
+        private ChatRoomDTO.MemberResponse sender;
+        private List<ChatRoomDTO.MemberResponse> receivers;
         private String createdAt;
 
         public static Response of(ChatMessage chatMessage) {
             return Response.builder()
-                    .id(chatMessage.getId())
+                    .messageId(chatMessage.getId())
                     .content(chatMessage.getContent())
-                    .senderId(chatMessage.getSender().getId())
-                    .receiverId(chatMessage.getReceiver().getId())
                     .roomId(chatMessage.getChatRoom().getId())
-                    .senderNickName(chatMessage.getSender().getNickName())
-                    .receiverNickName(chatMessage.getReceiver().getNickName())
                     .createdAt(chatMessage.getCreatedAt().toString())
                     .build();
         }
     }
-
-
 }

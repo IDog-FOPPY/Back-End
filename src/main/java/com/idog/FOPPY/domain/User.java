@@ -1,10 +1,7 @@
 package com.idog.FOPPY.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +38,7 @@ public class User extends BaseEntity implements UserDetails {
     private final List<Dog> dogs = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @ToString.Exclude
     private final List<ChatRoomMember> chatRooms = new ArrayList<>();
 
     @Builder
@@ -72,6 +70,14 @@ public class User extends BaseEntity implements UserDetails {
 
     public void changePassword(String password) {
         this.password = password;
+    }
+
+    public String getProfileImgUrl() {
+        try {
+            return this.dogs.get(0).getImgUrlList().get(0);
+        } catch (Exception e) {
+            return "https://기본프사";
+        }
     }
 
     @Override

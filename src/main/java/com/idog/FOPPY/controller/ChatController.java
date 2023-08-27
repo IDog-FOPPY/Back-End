@@ -29,24 +29,21 @@ public class ChatController {
 
     @MessageMapping("/send")
     public void send(@Payload ChatMessageDTO.Send message) {
-        chatService.sendMessage(message);
+        ChatMessageDTO.Response response = chatService.sendMessage(message);
         template.convertAndSend("/sub/room/" + message.getRoomId(), message);  // /sub/room/{roomId} 구독자에게 메시지 전달
-//        template.convertAndSendToUser(message.getReceiver(), "/queue", message); // /user/{username}/queue 구독자에게 메시지 전달
+//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(true, "Success", response));
     }
 
     @PostMapping("/room")
     @Operation(summary = "채팅방 생성 1 (memberId, dogId)")
-    public ResponseEntity<ResponseDTO<ChatRoomDTO.JoinResponse>> join1(@RequestBody ChatRoomDTO.JoinRequest1 joinRequest1) {
+    public ResponseEntity<ResponseDTO<ChatRoomDTO.JoinResponse>> join1(@RequestBody ChatRoomDTO.JoinRequest1 requestDto) {
         try {
-            ChatRoomDTO.JoinResponse joinResponse = chatRoomService.join1(joinRequest1);
-            Long roomId = joinResponse.getRoomId();
-            Long senderId = joinResponse.getSenderId();
-            Long receiverId = joinResponse.getReceiverId();
+            ChatRoomDTO.JoinResponse joinResponse = chatRoomService.join1(requestDto);
 
             ResponseDTO<ChatRoomDTO.JoinResponse> response = new ResponseDTO<>();
             response.setStatus(true);
             response.setMessage("Success");
-            response.setData(new ChatRoomDTO.JoinResponse(roomId, senderId, receiverId));
+            response.setData(joinResponse);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
@@ -59,14 +56,11 @@ public class ChatController {
     public ResponseEntity<ResponseDTO<ChatRoomDTO.JoinResponse>> join2(@RequestBody ChatRoomDTO.JoinRequest2 request) {
         try {
             ChatRoomDTO.JoinResponse joinResponse = chatRoomService.join2(request);
-            Long roomId = joinResponse.getRoomId();
-            Long senderId = joinResponse.getSenderId();
-            Long receiverId = joinResponse.getReceiverId();
 
             ResponseDTO<ChatRoomDTO.JoinResponse> response = new ResponseDTO<>();
             response.setStatus(true);
             response.setMessage("Success");
-            response.setData(new ChatRoomDTO.JoinResponse(roomId, senderId, receiverId));
+            response.setData(joinResponse);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {

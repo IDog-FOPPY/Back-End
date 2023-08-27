@@ -1,6 +1,7 @@
 package com.idog.FOPPY.repository;
 
 import com.idog.FOPPY.domain.ChatRoom;
+import com.idog.FOPPY.domain.ChatRoomMember;
 import com.idog.FOPPY.domain.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,17 +30,38 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
     }
 
     @Override
-    public Optional<ChatRoom> findByMembers(User member1, User member2) {
-        List<ChatRoom> result = em.createQuery("select c from ChatRoom c where (c.member1 = :member1 and c.member2 = :member2) or (c.member1 = :member2 and c.member2 = :member1)", ChatRoom.class)
-                .setParameter("member1", member1)
-                .setParameter("member2", member2)
+    public Optional<ChatRoom> findByMembers(List<User> members) {
+        String query = "select c from ChatRoom c where " +
+                "size(c.members) = :memberCount and " +
+                "not exists (" +
+                "    select m from ChatRoomMember m " +
+                "    where m.chatRoom = c and m.user not in :members" +
+                ")";
+
+        List<ChatRoom> result = em.createQuery(query, ChatRoom.class)
+                .setParameter("memberCount", members.size())
+                .setParameter("members", members)
                 .getResultList();
-        return result.stream().findAny();
+
+        if (!result.isEmpty()) {
+            return result.stream().findAny();
+        }
+        return Optional.empty();
     }
 
     @Override
-    public List<ChatRoom> findListByMemberId(Long memberId) {
-        return em.createQuery("select c from ChatRoom c where c.member1.id = :memberId or c.member2.id = :memberId", ChatRoom.class)
+//    public List<ChatRoom> findListByMemberId(Long memberId) {
+//        return em.createQuery("select c from ChatRoom c where c.member1.id = :memberId or c.member2.id = :memberId", ChatRoom.class)
+//                .setParameter("memberId", memberId)
+//                .getResultList();
+//    }
+//    public List<ChatRoom> findListByMemberId(Long memberId) {
+//        return em.createQuery("select c from ChatRoom c where :memberId member of c.members", ChatRoom.class)
+//                .setParameter("memberId", memberId)
+//                .getResultList();
+//    }
+    public List<ChatRoomMember> findListByMemberId(Long memberId) {
+        return em.createQuery("select m from ChatRoomMember m where m.user.id = :memberId", ChatRoomMember.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }

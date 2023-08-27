@@ -5,25 +5,30 @@ import com.idog.FOPPY.domain.ChatRoomMember;
 import com.idog.FOPPY.domain.Dog;
 import com.idog.FOPPY.domain.User;
 import com.idog.FOPPY.dto.chat.ChatRoomDTO;
+import com.idog.FOPPY.repository.ChatRoomMemberRepository;
 import com.idog.FOPPY.repository.ChatRoomRepository;
 import com.idog.FOPPY.repository.DogRepository;
 import com.idog.FOPPY.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
 
+    private final Logger LOGGER = Logger.getLogger(ChatRoomService.class.getName());
+
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
 
@@ -34,38 +39,49 @@ public class ChatRoomService {
         String email = authentication.getName();
         Long userId = userRepository.findByEmail(email).get().getId();
 
-        User member = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getUserId()));
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. email: " + email));
         Dog dog = dogRepository.findById(requestDto.getDogId())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 강아지입니다. dogId: " + requestDto.getDogId()));
-        User strayDogMember = dog.getUser();
+        User strayDogUser = dog.getUser();
 
-        if (requestDto.getUserId().equals(strayDogMember.getId())) {
+        if (userId.equals(strayDogUser.getId())) {
             throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member, strayDogMember);
+
+        List<User> members = new ArrayList<>();
+        members.add(currentUser);
+        members.add(strayDogUser);
+
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(members);  // FIXME: 제대로 안되고 있음 - 채팅방 인원수가 2일 때 채팅방 인원이 같은지 확인하도록 고쳐야겠음
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
-            return ChatRoomDTO.JoinResponse.of(chatRoom.get());
+            ChatRoomDTO.JoinResponse joinResponse = ChatRoomDTO.JoinResponse.of(chatRoom.get());
+            joinResponse.setAllMembers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).collect(Collectors.toList()));
+            joinResponse.setCurrentUser(ChatRoomDTO.MemberResponse.of(currentUser));
+            joinResponse.setOtherUsers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).filter(member -> !member.getId().equals(userId)).collect(Collectors.toList()));
+            return joinResponse;
         } else {
-            Long roomId = chatRoomRepository.save(requestDto.toEntity(member, strayDogMember));
+            List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
+            for (User user : members) {
+                ChatRoomMember chatRoomMember = new ChatRoomMember();
+                chatRoomMember.setUser(user);
+                chatRoomMembers.add(chatRoomMember);
+            }
+
+            Long roomId = chatRoomRepository.save(requestDto.toEntity(chatRoomMembers));
             ChatRoom room = chatRoomRepository.findById(roomId).get();
+            LOGGER.info(room.getMembers().stream().map(member -> member.getUser().getId()).toList().toString());
 
-            ChatRoomMember chatRoomMember = new ChatRoomMember();
-            ChatRoomMember chatRoomMember2 = new ChatRoomMember();
+            for (ChatRoomMember chatRoomMember : chatRoomMembers) {
+                chatRoomMember.setChatRoom(room);
+            }
 
-            chatRoomMember.setChatRoom(room);
-            chatRoomMember2.setChatRoom(room);
-
-            chatRoomMember.setUser(member);
-            chatRoomMember2.setUser(strayDogMember);
-
-            member.addChatRoom(chatRoomMember);
-            strayDogMember.addChatRoom(chatRoomMember2);
-
-            userRepository.save(member);
-            userRepository.save(strayDogMember);
-
-            return ChatRoomDTO.JoinResponse.of(chatRoomRepository.findById(roomId).get());
+            LOGGER.info(room.getMembers().stream().map(member -> member.getUser().getId()).toList().toString());
+            ChatRoomDTO.JoinResponse joinResponse = ChatRoomDTO.JoinResponse.of(room);
+            joinResponse.setAllMembers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).collect(Collectors.toList()));
+            joinResponse.setCurrentUser(ChatRoomDTO.MemberResponse.of(currentUser));
+            joinResponse.setOtherUsers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).filter(member -> !member.getId().equals(userId)).collect(Collectors.toList()));
+            return joinResponse;
         }
     }
 
@@ -76,37 +92,48 @@ public class ChatRoomService {
         String email = authentication.getName();
         Long userId = userRepository.findByEmail(email).get().getId();
 
-        User member1 = userRepository.findById(requestDto.getMember1Id())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMember1Id()));
-        User member2 = userRepository.findById(requestDto.getMember2Id())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + requestDto.getMember2Id()));
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. email: " + email));
 
-        if (requestDto.getMember2Id().equals(requestDto.getMember1Id())) {
-            throw new IllegalStateException("자기 자신과 채팅방을 생성할 수 없습니다.");
+        List<Long> memberIds = requestDto.getOtherUserIds();
+        LOGGER.info(memberIds.toString());
+        List<User> members = new ArrayList<>();
+        for (Long memberId : memberIds) {
+            User member = userRepository.findById(memberId)
+                    .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + memberId));
+            members.add(member);
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(member1, member2);
+        members.add(currentUser);
+
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(members);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
-            return ChatRoomDTO.JoinResponse.of(chatRoom.get());
+            ChatRoomDTO.JoinResponse joinResponse = ChatRoomDTO.JoinResponse.of(chatRoom.get());
+            joinResponse.setAllMembers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).collect(Collectors.toList()));
+            joinResponse.setCurrentUser(ChatRoomDTO.MemberResponse.of(currentUser));
+            joinResponse.setOtherUsers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).filter(member -> !member.getId().equals(userId)).collect(Collectors.toList()));
+            return joinResponse;
         } else {
-            Long roomId = chatRoomRepository.save(requestDto.toEntity(member1, member2));
+            List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
+            for (User user : members) {
+                ChatRoomMember chatRoomMember = new ChatRoomMember();
+                chatRoomMember.setUser(user);
+                chatRoomMembers.add(chatRoomMember);
+            }
+
+            Long roomId = chatRoomRepository.save(requestDto.toEntity(chatRoomMembers));
             ChatRoom room = chatRoomRepository.findById(roomId).get();
+            LOGGER.info(room.getMembers().stream().map(member -> member.getUser().getId()).toList().toString());
 
-            ChatRoomMember chatRoomMember1 = new ChatRoomMember();
-            ChatRoomMember chatRoomMember2 = new ChatRoomMember();
+            for (ChatRoomMember chatRoomMember : chatRoomMembers) {
+                chatRoomMember.setChatRoom(room);
+            }
 
-            chatRoomMember1.setChatRoom(room);
-            chatRoomMember2.setChatRoom(room);
-
-            chatRoomMember1.setUser(member1);
-            chatRoomMember2.setUser(member2);
-
-            member1.addChatRoom(chatRoomMember1);
-            member2.addChatRoom(chatRoomMember2);
-
-            userRepository.save(member1);
-            userRepository.save(member2);
-
-            return ChatRoomDTO.JoinResponse.of(chatRoomRepository.findById(roomId).get());
+            LOGGER.info(room.getMembers().stream().map(member -> member.getUser().getId()).toList().toString());
+            ChatRoomDTO.JoinResponse joinResponse = ChatRoomDTO.JoinResponse.of(room);
+            joinResponse.setAllMembers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).collect(Collectors.toList()));
+            joinResponse.setCurrentUser(ChatRoomDTO.MemberResponse.of(currentUser));
+            joinResponse.setOtherUsers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).filter(member -> !member.getId().equals(userId)).collect(Collectors.toList()));
+            return joinResponse;
         }
     }
 
@@ -118,7 +145,10 @@ public class ChatRoomService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalStateException("User ot found with username: " + userEmail));
 
-        List<ChatRoom> chatRooms = chatRoomRepository.findListByMemberId(user.getId());
+        List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findAllByUserId(user.getId());
+        LOGGER.info(chatRoomMembers.toString());
+        List<ChatRoom> chatRooms = chatRoomMembers.stream().map(chatRoomMember -> chatRoomMember.getChatRoom()).collect(Collectors.toList());
+        LOGGER.info(chatRooms.toString());
         return chatRooms.stream().map(ChatRoomDTO.Response::of).collect(Collectors.toList());
     }
 
@@ -136,13 +166,4 @@ public class ChatRoomService {
             throw new IllegalStateException("The chat room does not exist. roomId: " + roomId);
         }
     }
-
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> updateChatRoomName(Long roomId, String newChatRoomName) {
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow();
-        chatRoom.updateChatRoomName(newChatRoomName);
-        chatRoomRepository.save(chatRoom);
-        return ResponseEntity.ok("The chat room name has been changed.");
-    }
-
 }

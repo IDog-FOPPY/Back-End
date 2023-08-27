@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,14 +20,6 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "chat_room_name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member1_id")
-    private User member1;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member2_id")
-    private User member2;
-
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "last_message_id", nullable = true)
     private ChatMessage lastMessageId;
@@ -39,13 +30,23 @@ public class ChatRoom extends BaseEntity {
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
     @OneToMany(mappedBy = "chatRoom")
+    @ToString.Exclude
     private final List<ChatRoomMember> members = new ArrayList<>();
+
+    @Builder
+    public ChatRoom(List<ChatRoomMember> members) {
+        this.members.addAll(members);
+    }
 
     public void addMember(ChatRoomMember chatRoomMember) {
         this.members.add(chatRoomMember);
         if (chatRoomMember.getChatRoom() != this) {
             chatRoomMember.setChatRoom(this);
         }
+    }
+
+    public void addMembers(List<ChatRoomMember> members) {
+        this.members.addAll(members);
     }
 
     public ChatMessage addChatMessage(ChatMessage chatMessage) {
