@@ -53,7 +53,7 @@ public class ChatRoomService {
         members.add(currentUser);
         members.add(strayDogUser);
 
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(members);  // FIXME: 제대로 안되고 있음 - 채팅방 인원수가 2일 때 채팅방 인원이 같은지 확인하도록 고쳐야겠음
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findAllByUsers(members);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             ChatRoomDTO.JoinResponse joinResponse = ChatRoomDTO.JoinResponse.of(chatRoom.get());
             joinResponse.setAllMembers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).collect(Collectors.toList()));
@@ -105,7 +105,8 @@ public class ChatRoomService {
         }
         members.add(currentUser);
 
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByMembers(members);
+//        Optional<ChatRoom> chatRoom = chatRoomRepository.findByChatRoomMembers(members);
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findAllByUsers(members);
         if (chatRoom.isPresent()) { // 이미 존재하는 채팅방이면
             ChatRoomDTO.JoinResponse joinResponse = ChatRoomDTO.JoinResponse.of(chatRoom.get());
             joinResponse.setAllMembers(members.stream().map(member -> ChatRoomDTO.MemberResponse.of(member)).collect(Collectors.toList()));
@@ -145,11 +146,8 @@ public class ChatRoomService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalStateException("User ot found with username: " + userEmail));
 
-        List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findAllByUserId(user.getId());
-        LOGGER.info(chatRoomMembers.toString());
-        List<ChatRoom> chatRooms = chatRoomMembers.stream().map(chatRoomMember -> chatRoomMember.getChatRoom()).collect(Collectors.toList());
-        LOGGER.info(chatRooms.toString());
-        return chatRooms.stream().map(ChatRoomDTO.Response::of).collect(Collectors.toList());
+        Optional<List<ChatRoom>> chatRooms = chatRoomMemberRepository.findAllChatRoomByUserId(user.getId());
+        return chatRooms.get().stream().map(chatRoom -> ChatRoomDTO.Response.of(chatRoom)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

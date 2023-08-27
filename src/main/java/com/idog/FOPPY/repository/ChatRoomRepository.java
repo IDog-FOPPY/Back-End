@@ -10,9 +10,8 @@ import java.util.Optional;
 public interface ChatRoomRepository {
 
     Long save(ChatRoom chatRoom);
-    Optional<ChatRoom> findByMembers(List<User> members);
-//    List<ChatRoom> findListByMemberId(Long memberId);
-    List<ChatRoomMember> findListByMemberId(Long memberId);
     Optional<ChatRoom> findById(Long roomId);
+    Optional<ChatRoom> findAllByUsers(List<User> users);
+
     void deleteById(Long roomId);
 }

@@ -30,40 +30,24 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
     }
 
     @Override
-    public Optional<ChatRoom> findByMembers(List<User> members) {
-        String query = "select c from ChatRoom c where " +
-                "size(c.members) = :memberCount and " +
-                "not exists (" +
-                "    select m from ChatRoomMember m " +
-                "    where m.chatRoom = c and m.user not in :members" +
-                ")";
+    public Optional<ChatRoom> findAllByUsers(List<User> users) {
+        // members의 수와 일치하고, members가 속한 채팅방이 존재하면 해당 채팅방을 반환
+        Long memberCount = (long) users.size();
+        String query = "select cr from ChatRoom cr " +
+                "join cr.members crm " +
+                "where crm.user in :members " +
+                "group by cr " +
+                "having count(distinct crm.user) = :memberCount and count(distinct crm) = :memberCount";
 
         List<ChatRoom> result = em.createQuery(query, ChatRoom.class)
-                .setParameter("memberCount", members.size())
-                .setParameter("members", members)
+                .setParameter("memberCount", memberCount)
+                .setParameter("members", users)
                 .getResultList();
 
         if (!result.isEmpty()) {
             return result.stream().findAny();
         }
         return Optional.empty();
-    }
-
-    @Override
-//    public List<ChatRoom> findListByMemberId(Long memberId) {
-//        return em.createQuery("select c from ChatRoom c where c.member1.id = :memberId or c.member2.id = :memberId", ChatRoom.class)
-//                .setParameter("memberId", memberId)
-//                .getResultList();
-//    }
-//    public List<ChatRoom> findListByMemberId(Long memberId) {
-//        return em.createQuery("select c from ChatRoom c where :memberId member of c.members", ChatRoom.class)
-//                .setParameter("memberId", memberId)
-//                .getResultList();
-//    }
-    public List<ChatRoomMember> findListByMemberId(Long memberId) {
-        return em.createQuery("select m from ChatRoomMember m where m.user.id = :memberId", ChatRoomMember.class)
-                .setParameter("memberId", memberId)
-                .getResultList();
     }
 
     @Override
