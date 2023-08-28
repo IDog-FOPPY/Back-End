@@ -20,14 +20,6 @@ bin/
 ### IntelliJ IDEA ###
 application.yml
 .DS_Store
+*/.DS_Store
+*/idea
 .idea
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
