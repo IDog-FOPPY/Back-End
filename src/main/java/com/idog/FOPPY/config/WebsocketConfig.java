@@ -13,7 +13,6 @@ import org.springframework.web.socket.config.annotation.*;
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
-@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler;
