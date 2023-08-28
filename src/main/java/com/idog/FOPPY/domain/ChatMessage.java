@@ -16,7 +16,7 @@ public class ChatMessage extends BaseEntity {
     private Long id;
     private String content;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="sender_id", updatable = false)
     private User sender;
 
