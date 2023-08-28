@@ -7,6 +7,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 
@@ -25,6 +27,9 @@ public class StompHandler implements ChannelInterceptor {
                 jwtToken = jwtToken.substring(7);
             }
             jwtProvider.validateToken(jwtToken); // 토큰 유효성 검사
+            Authentication authentication = jwtProvider.getAuthentication(jwtToken);
+            // accessor에 등록
+            accessor.setUser(authentication);
         }
         return message;
     }
