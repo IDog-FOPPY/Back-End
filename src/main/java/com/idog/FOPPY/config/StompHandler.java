@@ -23,14 +23,16 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) { // websocket 연결 요청
             String jwtToken = accessor.getFirstNativeHeader("Authorization");
+            String authToken = jwtToken;
             if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
                 jwtToken = jwtToken.substring(7);
             }
             jwtProvider.validateToken(jwtToken); // 토큰 유효성 검사
-            Authentication authentication = jwtProvider.getAuthentication(jwtToken);
+            Authentication authentication = jwtProvider.getAuthentication(authToken);
             // accessor에 등록
             accessor.setUser(authentication);
         }
+
         return message;
     }
 }
