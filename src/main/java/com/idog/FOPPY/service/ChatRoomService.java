@@ -32,7 +32,7 @@ public class ChatRoomService {
     @Transactional(rollbackFor = Exception.class)
     public ChatRoomDTO.JoinResponse join1(ChatRoomDTO.JoinRequest1 requestDto) throws IllegalStateException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        String email = (String) authentication.getPrincipal();
         Long userId = userRepository.findByEmail(email).get().getId();
 
         User currentUser = userRepository.findByEmail(email)
@@ -85,7 +85,7 @@ public class ChatRoomService {
     @Transactional(rollbackFor = Exception.class)
     public ChatRoomDTO.JoinResponse join2(ChatRoomDTO.JoinRequest2 requestDto) throws IllegalStateException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        String email = (String) authentication.getPrincipal();
         Long userId = userRepository.findByEmail(email).get().getId();
 
         User currentUser = userRepository.findByEmail(email)
