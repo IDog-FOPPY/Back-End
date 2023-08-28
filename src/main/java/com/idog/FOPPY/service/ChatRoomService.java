@@ -7,6 +7,7 @@ import com.idog.FOPPY.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,7 +88,6 @@ public class ChatRoomService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = (String) authentication.getPrincipal();
         Long userId = userRepository.findByEmail(email).get().getId();
-
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. email: " + email));
 
