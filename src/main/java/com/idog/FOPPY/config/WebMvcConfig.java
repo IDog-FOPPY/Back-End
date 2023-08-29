@@ -11,15 +11,6 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-//    @Override
-//    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        for (HttpMessageConverter<?> converter : converters) {
-//            if (converter instanceof MappingJackson2HttpMessageConverter) {
-//                ((MappingJackson2HttpMessageConverter) converter).setDefaultCharset(StandardCharsets.UTF_8);
-//            }
-//        }
-//    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
