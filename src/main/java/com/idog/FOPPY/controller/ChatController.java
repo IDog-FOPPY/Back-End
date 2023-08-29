@@ -28,10 +28,16 @@ public class ChatController {
     private final ChatRoomService chatRoomService;
 
     @MessageMapping("/send")
-    public void send(@Payload ChatMessageDTO.Send message) {
-        ChatMessageDTO.Response response = chatService.sendMessage(message);
+    public ResponseEntity<ResponseDTO<ChatMessageDTO.Response>> send(@Payload ChatMessageDTO.Send message) {
+        ChatMessageDTO.Response responseDto = chatService.sendMessage(message);
         template.convertAndSend("/sub/room/" + message.getRoomId(), message);  // /sub/room/{roomId} 구독자에게 메시지 전달
-//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(true, "Success", response));
+
+        ResponseDTO<ChatMessageDTO.Response> response = new ResponseDTO<>();
+        response.setStatus(true);
+        response.setMessage("Success");
+        response.setData(responseDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/room")
