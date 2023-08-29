@@ -14,6 +14,7 @@ public class ChatMessageDTO {
 //            JOIN, CHAT, LEAVE
 //        }
         private String content;
+        private Long senderId;
         private Long roomId;
 //        private MessageType messageType;
 

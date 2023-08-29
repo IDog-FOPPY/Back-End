@@ -18,9 +18,10 @@
 
         function sendMessage() {
             var content = document.getElementById('content').value;
+            var senderId = document.getElementById('senderId').value;
             var roomId = document.getElementById('roomId').value;
             stompClient.send("/pub/send", {},
-                JSON.stringify({'content': content, 'roomId': roomId}));
+                JSON.stringify({'content': content, 'senderId': senderId, 'roomId': roomId}));
         }
 
         function show(message) {
@@ -34,6 +35,7 @@
 <body>
 <div>
     <div>
+        <input type="text" id="senderId" placeholder="senderId"/>
         <input type="text" id="roomId" placeholder="roomId"/>
         <input type="text" id="content" placeholder="Text"/>
         <button id="sendMessage" onClick="sendMessage();">Send</button>

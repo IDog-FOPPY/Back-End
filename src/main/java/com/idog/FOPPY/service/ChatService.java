@@ -28,12 +28,8 @@ public class ChatService {
 
     @Transactional(rollbackFor = Exception.class)
     public ChatMessageDTO.Response sendMessage(ChatMessageDTO.Send chatMessageDto) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = (String) authentication.getPrincipal();
-//        User currentUser = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. email: " + email));
-        User currentUser = userRepository.findById(Long.valueOf(1))  // 테스트용
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + 1));
+        User currentUser = userRepository.findById(Long.valueOf(chatMessageDto.getSenderId()))  // 테스트용
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다. userId: " + chatMessageDto.getSenderId()));
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatMessageDto.getRoomId())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 채팅방입니다. chatRoomId: " + chatMessageDto.getRoomId()));
