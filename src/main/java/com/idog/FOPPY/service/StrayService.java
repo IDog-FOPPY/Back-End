@@ -112,6 +112,7 @@ public class StrayService {
                     for (String filename : dog.getNoseImgUrlList()) {
                         if (filenameSimilarityMap.containsKey(filename)) {
                             FindStrayResponse findStrayResponse = new FindStrayResponse(filenameSimilarityMap.get(filename), dog);
+                            findStrayResponse.setCode(200);
                             responsesMap.putIfAbsent(dog.getId(), findStrayResponse);
                         }
                     }
@@ -123,7 +124,9 @@ public class StrayService {
                 return responses;
 
             } else {
-                throw new Exception(String.valueOf(status));
+                FindStrayResponse findStrayResponse = new FindStrayResponse();
+                findStrayResponse.setCode(status);
+                return Collections.singletonList(findStrayResponse);
             }
         } else {
             throw new RuntimeException("Invalid response: no status field");

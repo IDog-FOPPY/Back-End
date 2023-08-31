@@ -6,13 +6,17 @@ import com.idog.FOPPY.domain.PetSex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindStrayResponse {
+    private int code;
+
     private Double similarity;
     private Long user_id;
 
