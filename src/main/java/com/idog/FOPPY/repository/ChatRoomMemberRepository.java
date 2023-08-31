@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ChatRoomMemberRepository {
     Optional<List<ChatRoom>> findAllChatRoomByUserId(Long userId);
+    void deleteAllByChatRoomId(Long chatRoomId);
 }

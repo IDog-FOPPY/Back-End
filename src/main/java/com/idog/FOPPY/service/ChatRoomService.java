@@ -162,6 +162,7 @@ public class ChatRoomService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteChatRoom(Long roomId) {
         try {
+            chatRoomMemberRepository.deleteAllByChatRoomId(roomId);
             chatRoomRepository.deleteById(roomId);
         } catch (Exception e) {
             throw new IllegalStateException("The chat room does not exist. roomId: " + roomId);
