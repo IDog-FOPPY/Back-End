@@ -31,4 +31,14 @@ public class ChatRoomMemberRepositoryImpl implements ChatRoomMemberRepository {
         }
         return Optional.empty();
     }
+
+    @Override
+    public void deleteAllByChatRoomId(Long roomId) {
+        String query = "delete from ChatRoomMember crm " +
+                "where crm.chatRoom.id = :chatRoomId ";
+
+        em.createQuery(query)
+                .setParameter("chatRoomId", roomId)
+                .executeUpdate();
+    }
 }

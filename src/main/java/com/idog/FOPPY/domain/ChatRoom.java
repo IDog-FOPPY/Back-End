@@ -26,10 +26,10 @@ public class ChatRoom extends BaseEntity {
     private String lastMessageContent;
     private LocalDateTime lastMessageAt;
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private final List<ChatRoomMember> members = new ArrayList<>();
 
