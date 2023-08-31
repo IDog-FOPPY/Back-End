@@ -47,20 +47,13 @@ public class DogController {
 
     @PatchMapping("/{dogId}")
     @Operation(summary = "강아지 정보 수정")
-    public ResponseEntity<ResponseDTO<List<String>>> update(@PathVariable Long dogId, @RequestPart DogInfoRequest request,
-                                                    @RequestPart("file") List<MultipartFile> multipartFile) throws IOException {
-        dogService.update(dogId, request, multipartFile);
-        List<String> fileResponseList = new ArrayList<>();
+    public ResponseEntity<ResponseDTO<Long>> update(@PathVariable Long dogId, @RequestBody DogInfoRequest request) {
+        Long setDogId = dogService.update(dogId, request);
 
-        for (MultipartFile file : multipartFile) {
-            String base64Encoded = Base64.getEncoder().encodeToString(file.getBytes());
-            fileResponseList.add(base64Encoded);
-        }
-
-        ResponseDTO<List<String>> response = new ResponseDTO<>();
+        ResponseDTO<Long> response = new ResponseDTO<>();
         response.setStatus(true);
         response.setMessage("Dog info change successful.");
-        response.setData(fileResponseList);
+        response.setData(setDogId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);

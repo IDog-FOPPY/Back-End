@@ -100,14 +100,10 @@ public class DogService {
     }
 
     @Transactional
-    public Long update(Long dogId, DogInfoRequest request, List<MultipartFile> multipartFile) {
-
-        List<String> imgUrlList = s3Service.upload(multipartFile, "/dog");
-
+    public Long update(Long dogId, DogInfoRequest request) {
         Dog dog = dogRepository.findById(dogId)
                 .orElseThrow(() -> new UsernameNotFoundException("Dog not found with id: " + dogId));
-        dog.update(request, imgUrlList);
-
+        dog.update(request);
         dogRepository.save(dog);
 
         return dog.getId();
