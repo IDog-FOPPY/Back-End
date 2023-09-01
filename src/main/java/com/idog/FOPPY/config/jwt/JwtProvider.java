@@ -96,11 +96,6 @@ public class JwtProvider {
         );
     }
 
-    public Long getUserId(String token) {
-        Claims claims = getClaims(token);
-        return claims.get("id", Long.class);
-    }
-
     public String getUsername(String token) {
         Claims claims = getClaims(token);
         return claims.get("username", String.class);
