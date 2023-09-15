@@ -39,7 +39,7 @@ public class StrayService {
     private WebClient webClient =
             WebClient
                     .builder()
-                    .baseUrl("http://43.202.57.167:8000")
+                    .baseUrl("http://13.125.77.61:8000")
                     .build();
 
     @Transactional
