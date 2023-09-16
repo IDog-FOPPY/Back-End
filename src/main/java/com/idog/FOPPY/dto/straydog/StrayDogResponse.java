@@ -1,9 +1,7 @@
 package com.idog.FOPPY.dto.straydog;
 
 import com.idog.FOPPY.domain.Breed;
-
 import com.idog.FOPPY.domain.MissingTime;
-
 import com.idog.FOPPY.domain.StrayDog;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
