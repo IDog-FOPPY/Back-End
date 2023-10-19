@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", "http://localhost:8080")); // 허용할 Origin 설정
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "https://foppy.netlify.app")); // 허용할 Origin 설정
                     configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS")); // 허용할 HTTP 메서드 설정
                     configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더 설정
                     configuration.setAllowCredentials(true); // credentials 허용 설정
