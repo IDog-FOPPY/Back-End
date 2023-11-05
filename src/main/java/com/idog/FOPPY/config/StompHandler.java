@@ -2,6 +2,9 @@ package com.idog.FOPPY.config;
 
 import com.idog.FOPPY.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -11,6 +14,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 
+@Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 @RequiredArgsConstructor
 @Component
 public class StompHandler implements ChannelInterceptor {
@@ -21,7 +26,7 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) { // 채널에 메시지를 전달하기 전에 실행되는 메소드
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) { // websocket 연결 요청
-            String jwtToken = accessor.getFirstNativeHeader("Authorization");
+            String jwtToken = accessor.getFirstNativeHeader("Authorization").split(" ")[1];
             if (!jwtProvider.validateToken(jwtToken)) { // 토큰 유효성 검사
                 throw new AccessDeniedException("유효하지 않은 토큰입니다.");
             }
