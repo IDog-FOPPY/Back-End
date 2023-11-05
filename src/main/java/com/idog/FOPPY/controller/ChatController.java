@@ -29,6 +29,7 @@ public class ChatController {
 
     @MessageMapping("/send")
     public ResponseEntity<ResponseDTO<ChatMessageDTO.Response>> send(@Payload ChatMessageDTO.Send message) {
+//        message.setType(ChatMessageDTO.Send.MessageType.CHAT);
         ChatMessageDTO.Response responseDto = chatService.sendMessage(message);
         template.convertAndSend("/sub/room/" + message.getRoomId(), message);  // /sub/room/{roomId} 구독자에게 메시지 전달
 
@@ -51,6 +52,8 @@ public class ChatController {
             response.setMessage("Success");
             response.setData(joinResponse);
 
+            sendSubscriptionRequestForNewChatroom(joinResponse);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
@@ -68,9 +71,24 @@ public class ChatController {
             response.setMessage("Success");
             response.setData(joinResponse);
 
+            sendSubscriptionRequestForNewChatroom(joinResponse);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(new ResponseDTO<>(false, e.getMessage()));
+        }
+    }
+
+    // 채팅방 생성 시, 새로운 채팅방에 참여한 유저들에게 새로운 채팅방이 생성되었음을 알림
+    private void sendSubscriptionRequestForNewChatroom(ChatRoomDTO.JoinResponse joinResponse) {
+        List<ChatRoomDTO.MemberResponse> otherUsers = joinResponse.getOtherUsers();
+        for (ChatRoomDTO.MemberResponse otherUser : otherUsers) {
+            ChatMessageDTO.Notification notification = ChatMessageDTO.Notification.builder()
+                    .roomId(joinResponse.getRoomId())
+                    .senderId(joinResponse.getCurrentUser().getId())
+                    .type(ChatMessageDTO.Notification.NotificationType.NEWCHAT)
+                    .build();
+            template.convertAndSend("/sub/newchat/" + otherUser.getId(), notification);  // /sub/newchat/{userId} 구독자에게 메시지 전달
         }
     }
 
