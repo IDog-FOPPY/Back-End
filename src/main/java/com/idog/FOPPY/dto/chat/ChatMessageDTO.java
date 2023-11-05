@@ -8,6 +8,7 @@ import lombok.*;
 
 public class ChatMessageDTO {
 
+    @Setter
     @Getter
     public static class Send {
 //        public enum MessageType {
@@ -16,7 +17,7 @@ public class ChatMessageDTO {
         private String content;
         private Long senderId;
         private Long roomId;
-//        private MessageType messageType;
+//        private MessageType type;
 
         public ChatMessage toEntity(User sender, ChatRoom chatRoom) {
             return ChatMessage.builder()
@@ -48,5 +49,16 @@ public class ChatMessageDTO {
                     .createdAt(chatMessage.getCreatedAt().toString())
                     .build();
         }
+    }
+
+    @Getter
+    @Builder
+    public static class Notification {
+        public enum NotificationType {
+            NEWCHAT
+        }
+        private Long roomId;
+        private Long senderId;
+        private NotificationType type;
     }
 }
